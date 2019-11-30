@@ -1,0 +1,490 @@
+
+/*html {*/
+    /*height: 100%;*/
+/*}*/
+
+/*body {*/
+    /*position: relative;*/
+    /*padding-top: 54px;*/
+    /*padding-bottom: 80px;*/
+    /*min-height: 100%;*/
+    /*background-color: whitesmoke;*/
+/*}*/
+
+/*@media (min-width: 992px) {*/
+    /*body {*/
+        /*padding-top: 56px;*/
+    /*}*/
+/*}*/
+
+/*.portfolio-item {*/
+    /*margin-bottom: 30px;*/
+/*}*/
+
+/*.pagination {*/
+    /*margin-bottom: 30px;*/
+/*}*/
+
+/*.footer {*/
+    /*position: absolute;*/
+    /*bottom: 0;*/
+    /*left: 0;*/
+    /*width: 100%;*/
+/*}*/
+
+html {
+    min-height: 100%;
+    height: auto;
+}
+
+body {
+  height: 100%;
+    background-color: whitesmoke;
+}
+
+@media (min-width: 768px) {
+    .pull-right-no-xs {
+        float: right !important;
+    }
+}
+
+.navbar-placeholder {
+    min-height: 50px;
+}
+
+.navbar-inverse .sidebar > li > a {
+    color: #9d9d9d;
+}
+
+.navbar-inverse .sidebar > li > a:hover,
+.navbar-inverse .sidebar > li > a:focus {
+
+    background-color: #5e5e5e;
+}
+
+
+
+
+.navbar-fixed-side {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-fixed-side .navbar-nav {
+    height: 100%;
+}
+
+.history-box {
+    background: #00ecb5;
+    margin: 15px;
+    padding: 7px 17px 7px 17px;
+    width: 400px;
+    border-radius: 10px;
+}
+
+.navbar {
+    margin: 0;
+}
+
+.navbar-brand {
+    padding: 0px;
+    padding-left: 5px ;
+}
+.navbar-brand>img {
+    height: 100%;
+
+    width: auto;
+
+}
+
+
+/*** Problem sidebar ***/
+
+.full-wrapper {
+
+    height: 100%;
+    /*display: none;*/
+    display: inline-block;
+    padding-left: 20%;
+    width: 100%;
+}
+
+
+
+.full-wrapper.collapsed-sidebar {
+    padding-left: 50px;
+}
+
+
+.sidebar-wrapper {
+    position: fixed;
+    height: 100%;
+    width: 20%;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    overflow-x: auto;
+    background-color: ghostwhite;
+    z-index: 10;
+
+
+}
+
+.full-wrapper.smooth-transition {
+    transition: all 0.2s ease;
+    display: inherit;
+}
+
+.smooth-transition .sidebar-wrapper{
+    transition: all 0.2s ease;
+}
+
+
+.collapsed-sidebar .sidebar-wrapper {
+    width: 50px;
+}
+
+.content-wrapper {
+    height: 100%;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-bottom: 20px;
+	position: relative;
+
+}
+
+
+.sidebar {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    transition: all 0.2s ease;
+
+}
+.sidebar-content {
+    padding-bottom: 120px;
+}
+
+.sidebar .sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+
+.sidebar > img {
+    width: 100%;
+    height: auto;
+}
+
+.sidebar .logo {
+    max-width: 100px;
+    width: 100%;
+
+
+}
+
+.sidebar hr {
+    border: 1px solid lightgray;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+}
+
+
+.sidebar-menu > li {
+  position: relative;
+  display: block;
+
+
+}
+.sidebar-menu > li > a {
+  color: inherit;
+  position: relative;
+  display: block;
+  padding: 10px 20px;
+  line-height: 100%;
+
+}
+
+pre.source-code {
+    border: none;
+}
+
+.collapsed-sidebar .sidebar-menu > li {
+    text-align: center;
+}
+
+.collapsed-sidebar .sidebar-menu > li > a{
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+
+}
+
+.sidebar-menu > li > a:hover {
+  text-decoration: none;
+  background-color: lightblue;
+}
+
+.sidebar-menu > li > a:focus {
+  text-decoration: none;
+}
+
+.sidebar-menu > li.active:before {
+    background-color: yellowgreen;
+    width: 8px;
+    content: '';
+    height: 100%;
+    position: absolute;
+    left:0;
+    z-index: 1;
+}
+
+
+.collapsed-sidebar .full-open-only {
+    display: none;
+}
+
+.collapsed-sidebar .collapsed-only {
+    display: inherit;
+}
+
+.collapsed-only {
+    display: none;
+}
+
+.fork-selection {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.fork-selection > li {
+    display: inline-block;
+    width: 50%;
+    padding: 0;
+    line-height: 50px;
+    text-align: center;
+    height: 50px;
+    position: relative;
+}
+
+.fork-selection > li > a {
+    color: inherit;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: block;
+}
+
+.fork-selection > li > a:hover,
+.fork-selection > li > a:focus {
+    text-decoration: none;
+    background-color: lightblue;
+
+}
+
+.fork-selection > li > a:hover:before,
+.fork-selection > li > a:focus:before {
+    position: absolute;
+    bottom: 0;
+    left:0 ;
+    content: '';
+    background-color: #80d0d0;
+    height: 10px;
+    width: 100%;
+
+
+}
+
+.fork-selection > li.active:before {
+    position: absolute;
+    bottom: 0;
+    left:0 ;
+    content: '';
+    background-color: #50a0a0;
+    height: 10px;
+    width: 100%;
+    z-index: 1;
+}
+
+
+.problem-title {
+    line-height: 30px;
+    font-size: 1.5em;
+}
+
+.text-over-line {
+    position: relative;
+    text-align: center;
+}
+
+.text-over-line > span:first-child {
+    background-color: red;
+    width: 100%;
+    position: absolute;
+    height: 1px;
+    top: 50%;
+    left: 0;
+    z-index: -1;
+}
+
+.strike {
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+}
+
+.strike > span {
+    position: relative;
+    display: inline-block;
+
+}
+
+.strike > span:before,
+.strike > span:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 9999px;
+    height: 1px;
+    background: black;
+}
+
+.strike > span:before {
+    right: 100%;
+    margin-right: 15px;
+}
+
+.strike > span:after {
+    left: 100%;
+    margin-left: 15px;
+}
+
+.form-group {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+tr.active-row {
+    background-color: palegreen !important;
+}
+
+.alert.alert-danger.force-bgcolor {
+    background-color: #f2dede !important;
+}
+
+
+.sidebar-menu .error {
+    position: absolute;
+    right: 10px;
+
+}
+
+.collapsed-sidebar .error {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    border-radius: 10px;
+}
+
+.bg-white {
+    background-color: white;
+
+}
+.CodeMirror-fullscreen {
+	left: 20%;
+}
+
+.tooltip-inner {
+    white-space:pre-wrap;
+}
+
+.pre-wrap-block {
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    display: block;
+}
+
+.markdown-body img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.markdown-body {
+    line-height: 1.5;
+    color: #333;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    word-wrap: break-word;
+}
+
+.markdown-body img {
+    display: block;
+    margin: 0 auto;
+    height: auto;
+    max-width: 100%;
+}
+
+.markdown-body table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid gray;
+    margin: 1.5em auto;
+}
+
+.markdown-body table th, .markdown-body table td {
+    border: 1px solid #d6d6d6;
+    padding: .3em .6em;
+    vertical-align: middle;
+}
+
+.markdown-body table th {
+    font-weight: bold;
+    color: #333;
+    background-color: #eee;
+}
+
+.markdown-body pre {
+    direction: ltr;
+    background-color: #eee;
+    padding: 10px 20px;
+    word-wrap: break-word;
+}
+
+.markdown-body code {
+    word-wrap: break-word;
+    color: #666;
+    background-color: transparent;
+    padding: 0;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    font-family: Arial, serif;
+    font-weight: 500;
+}

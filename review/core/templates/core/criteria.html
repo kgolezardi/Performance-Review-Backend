@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+
+{% load staticfiles %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <h1>Criteria Evaluation</h1>
+            <form action="{% url 'core:criteria' %}" method="post">
+                {% csrf_token %}
+                {% for form in forms %}
+                    <strong>{{ form.criterion_name }}</strong>
+                    {% bootstrap_field form.rating %}
+                    {% bootstrap_field form.description %}
+                {% endfor %}
+                {% buttons %}
+                    <button type="submit" class="form-control btn btn-success">Save</button>
+                {% endbuttons %}
+            </form>
+        </div>
+    </div>
+{% endblock %}
