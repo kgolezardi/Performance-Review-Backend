@@ -1,21 +1,42 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from accounts.models import User
+from core.enums import Evaluations
 
 
-CRITERIA = [('sahabiness', 'Sahabiness'), ('problem-solving', 'Problem solving'), ('execution', 'Execution'),
-            ('thought-leadership', 'Thought leadership'), ('leadership', 'Leadership'), ('presence', 'Presence')]
-EVALUATIONS = [(1, 'Needs improvement'), (2, 'Consistently meets expectations'), (3, 'Exceeds expectations'),
-               (4, 'Strongly exceeds expectations'), (5, 'Superb')]
+class Project(models.Model):
+    name = models.CharField(max_length=255, blank=False)
 
 
-class CriterionEvaluation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    criterion = models.CharField(max_length=20, choices=CRITERIA, blank=False)
-    rating = models.IntegerField(choices=EVALUATIONS, blank=False)
-    description = models.CharField(max_length=100, blank=False)
+class ProjectReview(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    reviewee = models.ForeignKey(User, on_delete=models.PROTECT)
+    text = models.CharField(max_length=512, blank=False)
+    rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
 
 
-# class Projects(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+class ProjectComment(models.Model):
+    project_review = models.ForeignKey(ProjectReview, on_delete=models.PROTECT)
+    reviewer = models.ForeignKey(User, on_delete=models.PROTECT)
+    text = models.CharField(max_length=512, blank=False)
+    rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
 
+
+class PersonReview(models.Model):
+    reviewee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='reviews')
+    reviewer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='authored_reviews')
+    sahabiness_rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
+    sahabiness_comment = models.CharField(max_length=280, blank=False)
+    problem_solving_rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
+    problem_solving_comment = models.CharField(max_length=280, blank=False)
+    execution_rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
+    execution_comment = models.CharField(max_length=280, blank=False)
+    thought_leadership_rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
+    thought_leadership_comment = models.CharField(max_length=280, blank=False)
+    leadership_rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
+    leadership_comment = models.CharField(max_length=280, blank=False)
+    presence_rating = models.IntegerField(choices=Evaluations.choices(), blank=False)
+    presence_comment = models.CharField(max_length=280, blank=False)
+    strengths = ArrayField(models.CharField(max_length=280), size=3)
+    weaknesses = ArrayField(models.CharField(max_length=280), size=3)
