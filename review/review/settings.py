@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'graphene_django',
     'bootstrap4',
 
     'accounts',
@@ -110,6 +111,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'graphql_api.schema.schema'
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
