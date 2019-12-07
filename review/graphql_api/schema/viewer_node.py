@@ -1,9 +1,11 @@
 import graphene
 
+import accounts.schema.user_query
 from graphql_api.schema.utils import get_node
 
 
 class ViewerNode(
+    accounts.schema.user_query.Query,
     graphene.ObjectType,
 ):
     class Meta:
