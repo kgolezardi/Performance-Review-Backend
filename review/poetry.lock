@@ -1,5 +1,13 @@
 [[package]]
 category = "main"
+description = "A library for parsing ISO 8601 strings."
+name = "aniso8601"
+optional = false
+python-versions = "*"
+version = "7.0.0"
+
+[[package]]
+category = "main"
 description = "ASGI specs, helper code, and adapters"
 name = "asgiref"
 optional = false
@@ -51,11 +59,116 @@ version = "0.4.5"
 
 [[package]]
 category = "main"
+description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
+name = "django-filter"
+optional = false
+python-versions = ">=3.4"
+version = "2.2.0"
+
+[package.dependencies]
+Django = ">=1.11"
+
+[[package]]
+category = "main"
+description = "GraphQL Framework for Python"
+name = "graphene"
+optional = false
+python-versions = "*"
+version = "2.1.8"
+
+[package.dependencies]
+aniso8601 = ">=3,<=7"
+graphql-core = ">=2.1,<3"
+graphql-relay = ">=2,<3"
+six = ">=1.10.0,<2"
+
+[[package]]
+category = "main"
+description = "Graphene Django integration"
+name = "graphene-django"
+optional = false
+python-versions = "*"
+version = "2.7.1"
+
+[package.dependencies]
+Django = ">=1.11"
+graphene = ">=2.1.7,<3"
+graphql-core = ">=2.1.0,<3"
+promise = ">=2.1"
+singledispatch = ">=3.4.0.3"
+six = ">=1.10.0"
+
+[[package]]
+category = "main"
+description = "GraphQL implementation for Python"
+name = "graphql-core"
+optional = false
+python-versions = "*"
+version = "2.2.1"
+
+[package.dependencies]
+promise = ">=2.1"
+rx = ">=1.6,<3"
+six = ">=1.10.0"
+
+[[package]]
+category = "main"
+description = "Relay implementation for Python"
+name = "graphql-relay"
+optional = false
+python-versions = "*"
+version = "2.0.1"
+
+[package.dependencies]
+graphql-core = ">=2.2,<3"
+promise = ">=2.2,<3"
+six = ">=1.12"
+
+[[package]]
+category = "main"
+description = "Promises/A+ implementation for Python"
+name = "promise"
+optional = false
+python-versions = "*"
+version = "2.2.1"
+
+[package.dependencies]
+six = "*"
+
+[[package]]
+category = "main"
 description = "World timezone definitions, modern and historical"
 name = "pytz"
 optional = false
 python-versions = "*"
 version = "2019.3"
+
+[[package]]
+category = "main"
+description = "Reactive Extensions (Rx) for Python"
+name = "rx"
+optional = false
+python-versions = "*"
+version = "1.6.1"
+
+[[package]]
+category = "main"
+description = "This library brings functools.singledispatch from Python 3.4 to Python 2.6-3.3."
+name = "singledispatch"
+optional = false
+python-versions = "*"
+version = "3.4.0.3"
+
+[package.dependencies]
+six = "*"
+
+[[package]]
+category = "main"
+description = "Python 2 and 3 compatibility utilities"
+name = "six"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*"
+version = "1.13.0"
 
 [[package]]
 category = "main"
@@ -74,15 +187,25 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.3.0"
 
 [metadata]
-content-hash = "4372e627f36ed7699363fb900bc1626ae506d121d8b172a9cd8664d715450754"
+content-hash = "cfe86494da631bb2d4294ad92a5dd71d60dc9e0882fc38b3abffc463c63aca15"
 python-versions = "^3.6"
 
 [metadata.hashes]
+aniso8601 = ["513d2b6637b7853806ae79ffaca6f3e8754bdd547048f5ccc1420aec4b714f1e", "d10a4bf949f619f719b227ef5386e31f49a2b6d453004b21f02661ccc8670c7b"]
 asgiref = ["7e06d934a7718bf3975acbf87780ba678957b87c7adc056f13b6215d610695a0", "ea448f92fc35a0ef4b1508f53a04c4670255a3f33d22a81c8fc9c872036adbe5"]
 beautifulsoup4 = ["5279c36b4b2ec2cb4298d723791467e3000e5384a43ea0cdf5d45207c7e97169", "6135db2ba678168c07950f9a16c4031822c6f4aec75a65e0a97bc5ca09789931", "dcdef580e18a76d54002088602eba453eec38ebbcafafeaabd8cab12b6155d57"]
 django = ["6f857bd4e574442ba35a7172f1397b303167dae964cf18e53db5e85fe248d000", "d98c9b6e5eed147bc51f47c014ff6826bd1ab50b166956776ee13db5a58804ae"]
 django-bootstrap4 = ["3da770392819267eda2f774bcf832460af00db21089b94caf4df94be8a48c48c"]
 django-environ = ["6c9d87660142608f63ec7d5ce5564c49b603ea8ff25da595fd6098f6dc82afde", "c57b3c11ec1f319d9474e3e5a79134f40174b17c7cc024bbb2fad84646b120c4"]
+django-filter = ["558c727bce3ffa89c4a7a0b13bc8976745d63e5fd576b3a9a851650ef11c401b", "c3deb57f0dd7ff94d7dce52a047516822013e2b441bed472b722a317658cfd14"]
+graphene = ["09165f03e1591b76bf57b133482db9be6dac72c74b0a628d3c93182af9c5a896", "2cbe6d4ef15cfc7b7805e0760a0e5b80747161ce1b0f990dfdc0d2cf497c12f9"]
+graphene-django = ["233037a82a56d9d4a1357f51743a2948016a358a0b58d071faa2ae56bf47e65d", "eab206e013eca3366b1a8f78ac9aa1024c7fbabed5cbd0c09fda6d325b37aa32"]
+graphql-core = ["1488f2a5c2272dc9ba66e3042a6d1c30cea0db4c80bd1e911c6791ad6187d91b", "da64c472d720da4537a2e8de8ba859210b62841bd47a9be65ca35177f62fe0e4"]
+graphql-relay = ["870b6b5304123a38a0b215a79eace021acce5a466bf40cd39fa18cb8528afabb", "ac514cb86db9a43014d7e73511d521137ac12cf0101b2eaa5f0a3da2e10d913d"]
+promise = ["2ebbfc10b7abf6354403ed785fe4f04b9dfd421eb1a474ac8d187022228332af", "348f5f6c3edd4fd47c9cd65aed03ac1b31136d375aa63871a57d3e444c85655c"]
 pytz = ["1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d", "b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be"]
+rx = ["13a1d8d9e252625c173dc795471e614eadfe1cf40ffc684e08b8fff0d9748c23", "7357592bc7e881a95e0c2013b73326f704953301ab551fbc8133a6fadab84105"]
+singledispatch = ["5b06af87df13818d14f08a028e42f566640aef80805c3b50c5056b086e3c2b9c", "833b46966687b3de7f438c761ac475213e53b306740f1abfaa86e1d1aae56aa8"]
+six = ["1f1b7d42e254082a9db6279deae68afb421ceba6158efa6131de7b3003ee93fd", "30f610279e8b2578cab6db20741130331735c781b56053c59c4076da27f06b66"]
 soupsieve = ["bdb0d917b03a1369ce964056fc195cfdff8819c40de04695a80bc813c3cfa1f5", "e2c1c5dee4a1c36bcb790e0fabd5492d874b8ebd4617622c4f6a731701060dda"]
 sqlparse = ["40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177", "7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"]

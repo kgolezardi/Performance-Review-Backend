@@ -9,6 +9,9 @@ python = "^3.6"
 django = "^3.0"
 django-bootstrap4 = "^1.0"
 django-environ = "^0.4.5"
+graphene-django = "^2.7"
+graphene = "^2.1"
+django-filter = "^2.2"
 
 [tool.poetry.dev-dependencies]
 
