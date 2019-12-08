@@ -8,6 +8,9 @@ from core.enums import Evaluations
 class Project(models.Model):
     name = models.CharField(max_length=255, blank=False)
 
+    def __str__(self):
+        return self.name
+
 
 class ProjectReview(models.Model):
     project = models.ForeignKey(Project, on_delete=models.PROTECT)
