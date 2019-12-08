@@ -1,0 +1,22 @@
+version: '3.4'
+services:
+  database:
+    image: postgres:12.1
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - POSTGRES_PASSWORD
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  database-data:
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.155.0/24
