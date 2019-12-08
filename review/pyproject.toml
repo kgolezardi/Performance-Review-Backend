@@ -12,6 +12,7 @@ django-environ = "^0.4.5"
 graphene-django = "^2.7"
 graphene = "^2.1"
 django-filter = "^2.2"
+psycopg2-binary = "^2.8"
 
 [tool.poetry.dev-dependencies]
 
