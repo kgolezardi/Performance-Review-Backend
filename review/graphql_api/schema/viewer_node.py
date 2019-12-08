@@ -1,10 +1,12 @@
 import graphene
 
 import accounts.schema.user_query
+import core.schema.core_query
 from graphql_api.schema.utils import get_node
 
 
 class ViewerNode(
+    core.schema.core_query.Query,
     accounts.schema.user_query.Query,
     graphene.ObjectType,
 ):
