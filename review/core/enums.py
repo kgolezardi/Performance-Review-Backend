@@ -1,7 +1,7 @@
 from utils.base_enum import BaseEnum
 
 
-class Evaluations(BaseEnum):
+class Evaluation(BaseEnum):
     NEEDS_IMPROVMENT = 1
     MEETS_EXPECTATIONS = 2
     EXCEEDS_EXPECTATIONS = 3
