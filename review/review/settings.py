@@ -46,12 +46,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'graphene_django',
+    'corsheaders',
 
     'accounts',
     'core',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -142,3 +144,6 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+CORS_ORIGIN_WHITELIST = env.list('CORS_ALLOW_CREDENTIALS', default=[])
+CORS_ALLOW_CREDENTIALS = True
