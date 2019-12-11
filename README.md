@@ -8,3 +8,27 @@
 - Install dependencies `poetry install`
 - Create `.env` based on the given `sample.env` in root and in `docker/development`
 - Run docker compose file at `docker/development` to create PostgreSQL container `docker-compose up`
+
+## deployment
+
+### build
+
+```
+cd review
+docker build --tag=kgolezardi/performance-review-backend:latest .
+```
+###
+```
+cd docker/production/
+docker-compose up -d
+```
+### migrations
+```
+cd docker/production/
+docker-compose run api python manage.py migrate
+```
+### create superuser
+```
+cd docker/production/
+docker-compose run api python manage.py createsuperuser
+```
