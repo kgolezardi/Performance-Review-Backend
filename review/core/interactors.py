@@ -16,6 +16,7 @@ def save_person_review(reviewee, reviewer, **kwargs):
     if not can_review(reviewer, reviewee):
         return None
 
+    # TODO refactor: use get_person_review
     person_review, created = PersonReview.objects.get_or_create(reviewee=reviewee, reviewer=reviewer)
 
     fields = ['sahabiness_rating', 'sahabiness_comment', 'problem_solving_rating',
@@ -35,6 +36,7 @@ def save_person_review(reviewee, reviewer, **kwargs):
 
 
 def save_project_review(project, reviewee, reviewers, **kwargs):
+    # TODO refactor: use get_project_review
     project_review, created = ProjectReview.objects.get_or_create(project=project, reviewee=reviewee)
 
     fields = ['text', 'rating']
