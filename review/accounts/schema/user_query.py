@@ -13,6 +13,7 @@ class UserNode(DjangoObjectType):
 
     @classmethod
     def base_query_set(cls, info):
+        # TODO move this logic to interactor
         if info.context.user.is_authenticated:
             return User.objects.filter(is_staff=False, is_active=True)
         return User.objects.none()
@@ -26,7 +27,7 @@ class UserNode(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    users = graphene.List(UserNode, required=True)
+    users = graphene.List(graphene.NonNull(UserNode), required=True)
 
     def resolve_users(self, info):
         return UserNode.base_query_set(info)
