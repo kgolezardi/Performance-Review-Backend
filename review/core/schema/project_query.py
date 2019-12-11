@@ -13,6 +13,7 @@ class ProjectNode(DjangoObjectType):
 
     @classmethod
     def base_query_set(cls, info):
+        # TODO move this logic to interactor
         if info.context.user.is_authenticated:
             return Project.objects.all()
         return Project.objects.none()
@@ -26,7 +27,8 @@ class ProjectNode(DjangoObjectType):
 
 
 class ProjectQuery(graphene.ObjectType):
-    projects = graphene.List(ProjectNode, required=True)
+    project = relay.Node.Field(ProjectNode)
+    projects = graphene.List(graphene.NonNull(ProjectNode), required=True)
 
     def resolve_projects(self, info):
         return ProjectNode.base_query_set(info)
