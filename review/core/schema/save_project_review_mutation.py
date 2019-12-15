@@ -15,7 +15,7 @@ class SaveProjectReviewMutation(WithViewer, ClientIDMutation):
         project_id = graphene.NonNull(graphene.ID)
         text = graphene.String()
         rating = Evaluation()
-        reviewers_id = graphene.List(graphene.NonNull(graphene.ID), required=True)
+        reviewers_id = graphene.List(graphene.NonNull(graphene.ID))
 
     project_review = graphene.Field(ProjectReviewNode)
 
@@ -25,10 +25,12 @@ class SaveProjectReviewMutation(WithViewer, ClientIDMutation):
         project = get_node(args['project_id'], info, Project)
         reviewee = info.context.user
 
-        reviewers = [get_node(reviewer_id, info, User) for reviewer_id in args['reviewers_id']]
-        reviewers = list(filter(None, reviewers))  # remove None values
-        if reviewee in reviewers:
-            reviewers.remove(reviewee)
+        reviewers = None
+        if 'reviewers_id' in args and args['reviewers_id'] is not None:
+            reviewers = [get_node(reviewer_id, info, User) for reviewer_id in args['reviewers_id']]
+            reviewers = list(filter(None, reviewers))  # remove None values
+            if reviewee in reviewers:
+                reviewers.remove(reviewee)
 
         if project is None:
             return SaveProjectReviewMutation(project_review=None)
