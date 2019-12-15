@@ -3,7 +3,7 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 
 from accounts.models import User
-from core.interactors import get_person_review, get_all_person_reviews
+from core.interactors.person_review import get_or_create_person_review, get_all_person_reviews, get_person_review
 from core.schema.enums import Evaluation
 from graphql_api.schema.utils import get_node
 from ..models import PersonReview
@@ -33,19 +33,8 @@ class PersonReviewNode(DjangoObjectType):
     presence_rating = Evaluation()
 
     @classmethod
-    def base_query_set(cls, info):
-        # TODO move this logic to interactor
-        if info.context.user.is_authenticated:
-            user = info.context.user
-            return get_all_person_reviews(user)
-        return PersonReview.objects.none()
-
-    @classmethod
     def get_node(cls, info, id):
-        try:
-            return PersonReviewNode.base_query_set(info).get(id=id)
-        except cls._meta.model.DoesNotExist:
-            return None
+        return get_person_review(info.context.user, id)
 
 
 class PersonReviewQuery(graphene.ObjectType):
@@ -54,9 +43,9 @@ class PersonReviewQuery(graphene.ObjectType):
     find_person_review = graphene.Field(PersonReviewNode, reviewee_id=graphene.ID())
 
     def resolve_person_reviews(self, info):
-        return PersonReviewNode.base_query_set(info)
+        return get_all_person_reviews(info.context.user)
 
     def resolve_find_person_review(self, info, reviewee_id):
         reviewee = get_node(reviewee_id, info, User)
         reviewer = info.context.user
-        return get_person_review(reviewee=reviewee, reviewer=reviewer)
+        return get_or_create_person_review(reviewee=reviewee, reviewer=reviewer)

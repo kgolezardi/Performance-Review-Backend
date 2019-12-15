@@ -2,7 +2,7 @@ import graphene
 from graphene import ClientIDMutation
 
 from accounts.models import User
-from core.interactors import save_person_review
+from core.interactors.person_review import save_person_review
 from core.schema.enums import Evaluation
 from core.schema.person_review_query import PersonReviewNode
 from graphql_api.schema.utils import get_node
@@ -29,7 +29,6 @@ class SavePersonReviewMutation(WithViewer, ClientIDMutation):
 
     person_review = graphene.Field(PersonReviewNode)
 
-    # TODO: Login requied
     @classmethod
     def mutate_and_get_payload(cls, root, info, **args):
         reviewee = get_node(args['reviewee_id'], info, User)
@@ -38,5 +37,5 @@ class SavePersonReviewMutation(WithViewer, ClientIDMutation):
         if reviewee is None:
             return SavePersonReviewMutation(person_review=None)
 
-        person_review = save_person_review(reviewee, reviewer, **args)
+        person_review = save_person_review(reviewee=reviewee, reviewer=reviewer, **args)
         return SavePersonReviewMutation(person_review=person_review)

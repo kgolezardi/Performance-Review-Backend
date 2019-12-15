@@ -1,19 +1,25 @@
+from django.db.models import Q
+
 from core.models import PersonReview, ProjectReview
 
 
-def can_review(reviewer, reviewee):
-    if reviewer == reviewee:
+def can_review_person(user, reviewee):
+    # TODO: need improvement based on current phase
+    if not user.is_authenticated:
+        return False
+
+    if user == reviewee:
         return True
 
     try:
-        ProjectReview.objects.get(reviewee=reviewee, reviewers=reviewer)
+        ProjectReview.objects.get(reviewee=reviewee, reviewers=user)
     except ProjectReview.DoesNotExist:
         return False
     return True
 
 
 def save_person_review(reviewee, reviewer, **kwargs):
-    person_review = get_person_review(reviewee=reviewee, reviewer=reviewer)
+    person_review = get_or_create_person_review(reviewee=reviewee, reviewer=reviewer)
 
     if person_review is None:
         return None
@@ -36,31 +42,20 @@ def save_person_review(reviewee, reviewer, **kwargs):
 
 def get_all_person_reviews(user):
     # TODO: need improvement based on current phase
+    # TODO: all project reviews include the ones the user is mentioned in [| Q(reviewee=user)]
     return PersonReview.objects.filter(reviewer=user)
 
 
-def get_person_review(reviewee, reviewer):
-    if not can_review(reviewer, reviewee):
+def get_or_create_person_review(*, reviewee, reviewer):
+    if not can_review_person(reviewer, reviewee):
         return None
 
     person_review, created = PersonReview.objects.get_or_create(reviewee=reviewee, reviewer=reviewer)
     return person_review
 
 
-def save_project_review(project, reviewee, reviewers, **kwargs):
-    # TODO refactor: use get_project_review
-    project_review, created = ProjectReview.objects.get_or_create(project=project, reviewee=reviewee)
-
-    fields = ['text', 'rating']
-    for field in fields:
-        value = kwargs.get(field, None)
-        if value is not None:
-            project_review.__setattr__(field, value)
-
-    if reviewers is not None:
-        project_review.reviewers.clear()
-        for reviewer in reviewers:
-            project_review.reviewers.add(reviewer)
-
-    project_review.save()
-    return project_review
+def get_person_review(user, id):
+    try:
+        return get_all_person_reviews(user).get(id=id)
+    except PersonReview.DoesNotExist:
+        return None

@@ -2,6 +2,7 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
+from accounts.interactors import get_all_users, get_user
 from ..models import User
 
 
@@ -12,25 +13,15 @@ class UserNode(DjangoObjectType):
         interfaces = (relay.Node,)
 
     @classmethod
-    def base_query_set(cls, info):
-        # TODO move this logic to interactor
-        if info.context.user.is_authenticated:
-            return User.objects.filter(is_staff=False, is_active=True)
-        return User.objects.none()
-
-    @classmethod
     def get_node(cls, info, id):
-        try:
-            return UserNode.base_query_set(info).get(id=id)
-        except cls._meta.model.DoesNotExist:
-            return None
+        return get_user(info.context.user, id)
 
 
 class Query(graphene.ObjectType):
     users = graphene.List(graphene.NonNull(UserNode), required=True)
 
     def resolve_users(self, info):
-        return UserNode.base_query_set(info)
+        return get_all_users(info.context.user)
 
     user = relay.Node.Field(UserNode)
     me = graphene.Field(UserNode)
