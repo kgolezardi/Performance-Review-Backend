@@ -8,6 +8,9 @@ from core.enums import Evaluation
 class Project(models.Model):
     name = models.CharField(max_length=255, blank=False)
 
+    class Meta:
+        ordering = ['name']
+
     def __str__(self):
         return self.name
 
@@ -18,6 +21,10 @@ class ProjectReview(models.Model):
     text = models.CharField(max_length=512, blank=True, null=True)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
     reviewers = models.ManyToManyField(User, related_name='project_reviews_to_comment')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
 
 
 class ProjectComment(models.Model):
@@ -25,6 +32,10 @@ class ProjectComment(models.Model):
     reviewer = models.ForeignKey(User, on_delete=models.PROTECT)
     text = models.CharField(max_length=512, blank=True, null=True)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
 
 
 class PersonReview(models.Model):
@@ -44,3 +55,7 @@ class PersonReview(models.Model):
     presence_comment = models.CharField(max_length=280, null=True, blank=True)
     strengths = ArrayField(models.CharField(max_length=280), size=3, null=True, blank=True)
     weaknesses = ArrayField(models.CharField(max_length=280), size=3, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
