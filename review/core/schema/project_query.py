@@ -14,7 +14,7 @@ class ProjectNode(DjangoObjectType):
 
     @classmethod
     def get_node(cls, info, id):
-        return get_project(info.context.user)
+        return get_project(info.context.user, id)
 
 
 class ProjectQuery(graphene.ObjectType):
