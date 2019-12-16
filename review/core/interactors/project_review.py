@@ -2,7 +2,7 @@ from core.models import ProjectReview
 
 
 def save_project_review(project, reviewee, **kwargs):
-    project_review, created = get_or_create_project_review(project=project, reviewee=reviewee)
+    project_review = get_or_create_project_review(project=project, reviewee=reviewee)
 
     if project_review is None:
         return None
@@ -46,3 +46,16 @@ def get_project_review(user, id):
         return get_all_project_reviews(user).get(id=id)
     except ProjectReview.DoesNotExist:
         return None
+
+
+def delete_project_review(user, project_review):
+    # TODO: need improvement based on current phase
+    if not user.is_authenticated:
+        return None
+
+    if project_review.reviewee != user:
+        return None
+
+    project_review_id = project_review.id
+    project_review.delete()
+    return project_review_id
