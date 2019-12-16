@@ -10,5 +10,6 @@ class LogoutMutation(WithViewer, ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **args):
-        logout(info.context)
+        if info.context.user.is_authenticated:
+            logout(info.context)
         return LogoutMutation()

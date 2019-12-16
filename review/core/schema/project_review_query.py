@@ -3,6 +3,7 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 
 from accounts.schema.user_query import UserNode
+from core.interactors.project_review import get_all_project_reviews, get_project_review
 from core.schema.enums import Evaluation
 from ..models import ProjectReview
 
@@ -23,19 +24,8 @@ class ProjectReviewNode(DjangoObjectType):
         return self.reviewers.all()
 
     @classmethod
-    def base_query_set(cls, info):
-        # TODO move this logic to interactor
-        if info.context.user.is_authenticated:
-            user=info.context.user
-            return ProjectReview.objects.filter(reviewee=user)
-        return ProjectReview.objects.none()
-
-    @classmethod
     def get_node(cls, info, id):
-        try:
-            return ProjectReviewNode.base_query_set(info).get(id=id)
-        except cls._meta.model.DoesNotExist:
-            return None
+        return get_project_review(info.context.user, id)
 
 
 class ProjectReviewQuery(graphene.ObjectType):
@@ -43,4 +33,4 @@ class ProjectReviewQuery(graphene.ObjectType):
     project_reviews = graphene.List(graphene.NonNull(ProjectReviewNode), required=True)
 
     def resolve_project_reviews(self, info):
-        return ProjectReviewNode.base_query_set(info)
+        return get_all_project_reviews(info.context.user)

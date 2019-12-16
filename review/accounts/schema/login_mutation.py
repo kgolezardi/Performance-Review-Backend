@@ -20,8 +20,10 @@ class LoginMutation(WithViewer, ClientIDMutation):
 
         user = authenticate(username=username, password=password)
 
-        if user is not None:
-            if user.is_active:
-                login(info.context, user)
+        if user is None:
+            return LoginMutation(user=None)
+        if not user.is_active:
+            return LoginMutation(user=None)
 
+        login(info.context, user)
         return LoginMutation(user=user)

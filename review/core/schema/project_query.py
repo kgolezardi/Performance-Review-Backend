@@ -2,6 +2,7 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
+from core.interactors.project import get_all_projects, get_project
 from ..models import Project
 
 
@@ -12,18 +13,8 @@ class ProjectNode(DjangoObjectType):
         interfaces = (relay.Node,)
 
     @classmethod
-    def base_query_set(cls, info):
-        # TODO move this logic to interactor
-        if info.context.user.is_authenticated:
-            return Project.objects.all()
-        return Project.objects.none()
-
-    @classmethod
     def get_node(cls, info, id):
-        try:
-            return ProjectNode.base_query_set(info).get(id=id)
-        except cls._meta.model.DoesNotExist:
-            return None
+        return get_project(info.context.user)
 
 
 class ProjectQuery(graphene.ObjectType):
@@ -31,4 +22,4 @@ class ProjectQuery(graphene.ObjectType):
     projects = graphene.List(graphene.NonNull(ProjectNode), required=True)
 
     def resolve_projects(self, info):
-        return ProjectNode.base_query_set(info)
+        return get_all_projects(info.context.user)
