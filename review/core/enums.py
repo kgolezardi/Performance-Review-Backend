@@ -7,3 +7,10 @@ class Evaluation(BaseEnum):
     EXCEEDS_EXPECTATIONS = 3
     STRONGLY_EXCEEDS_EXPECTATIONS = 4
     SUPERB = 5
+
+
+class Phase(BaseEnum):
+    SELF_REVIEW = 1
+    PEER_REVIEW = 2
+    MANAGER_REVIEW = 3
+    RESULTS = 4
