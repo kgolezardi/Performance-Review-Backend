@@ -1,15 +1,19 @@
-from django.db.models import Q
-
+from core.enums import Phase
+from core.interactors.settings import is_at_current_phase
 from core.models import PersonReview, ProjectReview
 
 
 def can_review_person(user, reviewee):
-    # TODO: need improvement based on current phase
     if not user.is_authenticated:
         return False
 
     if user == reviewee:
+        if not is_at_current_phase(Phase.SELF_REVIEW):
+            return False
         return True
+
+    if not is_at_current_phase(Phase.PEER_REVIEW):
+        return False
 
     try:
         ProjectReview.objects.get(reviewee=reviewee, reviewers=user)
@@ -41,9 +45,15 @@ def save_person_review(reviewee, reviewer, **kwargs):
 
 
 def get_all_person_reviews(user):
-    # TODO: need improvement based on current phase
-    # TODO: all project reviews include the ones the user is mentioned in [| Q(reviewee=user)]
-    return PersonReview.objects.filter(reviewer=user)
+    if is_at_current_phase(Phase.SELF_REVIEW):
+        return PersonReview.objects.filter(reviewer=user, reviewee=user)
+    if is_at_current_phase(Phase.PEER_REVIEW):
+        return PersonReview.objects.filter(reviewer=user).exclude(reviewee=user)
+    if is_at_current_phase(Phase.MANAGER_REVIEW):
+        return PersonReview.objects.filter(reviewee__manager=user)
+    if is_at_current_phase(Phase.RESULTS):
+        return PersonReview.objects.filter(reviewee=user)
+    return PersonReview.objects.none()
 
 
 def get_or_create_person_review(*, reviewee, reviewer):

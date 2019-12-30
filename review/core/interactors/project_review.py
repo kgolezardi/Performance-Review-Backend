@@ -1,3 +1,5 @@
+from core.enums import Phase
+from core.interactors.settings import is_at_current_phase
 from core.models import ProjectReview
 
 
@@ -27,16 +29,24 @@ def save_project_review(project, reviewee, **kwargs):
 
 
 def get_all_project_reviews(user):
-    # TODO: need improvement based on current phase
-    # TODO: all project reviews include the ones the user is mentioned in [| Q(reviewers=user)]
-    # TODO: needs integration with front-end
-    return ProjectReview.objects.filter(reviewee=user)
+    if is_at_current_phase(Phase.SELF_REVIEW):
+        return ProjectReview.objects.filter(reviewee=user)
+    if is_at_current_phase(Phase.PEER_REVIEW):
+        return ProjectReview.objects.filter(reviewers=user)
+    if is_at_current_phase(Phase.MANAGER_REVIEW):
+        return ProjectReview.objects.filter(reviewee__manager=user)
+    if is_at_current_phase(Phase.RESULTS):
+        return ProjectReview.objects.filter(reviewee=user)
+    return ProjectReview.objects.none()
 
 
 def get_or_create_project_review(project, reviewee):
-    # TODO: need improvement based on current phase
     if not reviewee.is_authenticated:
         return None
+
+    if not is_at_current_phase(Phase.SELF_REVIEW):
+        return None
+
     project_review, created = ProjectReview.objects.get_or_create(project=project, reviewee=reviewee)
     return project_review
 
@@ -49,11 +59,13 @@ def get_project_review(user, id):
 
 
 def delete_project_review(user, project_review):
-    # TODO: need improvement based on current phase
     if not user.is_authenticated:
         return None
 
     if project_review.reviewee != user:
+        return None
+
+    if not is_at_current_phase(Phase.SELF_REVIEW):
         return None
 
     project_review_id = project_review.id

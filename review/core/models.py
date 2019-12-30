@@ -2,7 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from accounts.models import User
-from core.enums import Evaluation
+from core.enums import Evaluation, Phase
 
 
 class Project(models.Model):
@@ -59,3 +59,21 @@ class PersonReview(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+
+class Settings(models.Model):
+    phase = models.IntegerField(choices=Phase.choices(), null=False, blank=False)
+
+    class Meta:
+        verbose_name_plural = "settings"
+
+    def save(self, *args, **kwargs):
+        self.__class__.objects.exclude(id=self.id).delete()
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        try:
+            return cls.objects.get()
+        except cls.DoesNotExist:
+            return cls()

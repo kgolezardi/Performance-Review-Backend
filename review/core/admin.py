@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import Project, ProjectReview, PersonReview, ProjectComment
+from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
@@ -27,3 +27,4 @@ admin.site.register(Project)
 admin.site.register(ProjectReview, ProjectReviewAdmin)
 admin.site.register(ProjectComment, ProjectCommentAdmin)
 admin.site.register(PersonReview, PersonReviewAdmin)
+admin.site.register(Settings)
