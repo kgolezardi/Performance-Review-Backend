@@ -253,3 +253,5 @@ modules.xml
 # Pyre type checker
 
 # End of https://www.gitignore.io/api/python,django,pycharm+all
+
+/django-statics
