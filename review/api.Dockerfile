@@ -9,7 +9,7 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN pip install poetry
-RUN poetry config settings.virtualenvs.create false
+RUN poetry config virtualenvs.create false
 COPY poetry.lock pyproject.toml /app/
 
 # to prevent poetry from installing my actual app,
