@@ -15,18 +15,22 @@
 
 Create `.env` based on the given `sample.env` in root and in `docker/development`.
 
-### run
+### Run
 
 ```
 cd docker/production/
 docker-compose up -d
 ```
+
 ### Migrations
+
 ```
 cd docker/production/
 docker-compose run api python manage.py migrate
 ```
+
 ### Create superuser
+
 ```
 cd docker/production/
 docker-compose run api python manage.py createsuperuser
