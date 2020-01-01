@@ -18,3 +18,11 @@ def get_all_users(user):
 
 def get_user(user, id):
     return get_all_users(user).get(id=id)
+
+
+def start_review(user):
+    if user.is_authenticated:
+        user.has_started = True
+        user.save()
+        return True
+    return False

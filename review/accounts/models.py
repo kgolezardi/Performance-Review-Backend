@@ -5,6 +5,7 @@ from django.db import models
 class User(AbstractUser):
     manager = models.ForeignKey("User", related_name='team_members', on_delete=models.SET_NULL, null=True, blank=True)
     employee_id = models.IntegerField(unique=True, null=True)
+    has_started = models.BooleanField(default=False, null=False, blank=False)
 
     class Meta:
         ordering = ['first_name', 'last_name']
