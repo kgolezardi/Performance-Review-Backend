@@ -26,14 +26,14 @@ services:
       - "traefik.http.routers.front.rule=Host(`${SITE_DOMAIN}`)"
       - "traefik.http.routers.front.priority=10"
 
-  static:
+  statics:
     image: kgolezardi/performance-review-statics:latest
     networks:
       - gateway
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.static.rule=Host(`${ADMIN_DOMAIN}`) && PathPrefix(`/django-static/`)"
-      - "traefik.http.routers.static.priority=20"
+      - "traefik.http.routers.statics.rule=Host(`${ADMIN_DOMAIN}`) && PathPrefix(`/django-statics/`)"
+      - "traefik.http.routers.statics.priority=20"
 
   api:
     image: kgolezardi/performance-review-api:latest

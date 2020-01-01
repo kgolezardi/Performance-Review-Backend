@@ -133,8 +133,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/django-static/'
-STATIC_ROOT = root('django-statics')
+STATIC_URL = '/django-statics/'
+STATIC_ROOT = root('staticfiles')
 
 # Local settings
 try:
