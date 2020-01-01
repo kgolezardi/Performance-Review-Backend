@@ -53,8 +53,8 @@ class PersonReview(models.Model):
     leadership_comment = models.CharField(max_length=280, null=True, blank=True)
     presence_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     presence_comment = models.CharField(max_length=280, null=True, blank=True)
-    strengths = ArrayField(models.CharField(max_length=280), size=3, null=True, blank=True)
-    weaknesses = ArrayField(models.CharField(max_length=280), size=3, null=True, blank=True)
+    strengths = ArrayField(models.CharField(max_length=128), size=3, null=True, blank=True)
+    weaknesses = ArrayField(models.CharField(max_length=128), size=3, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
