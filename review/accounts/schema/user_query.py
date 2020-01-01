@@ -11,6 +11,12 @@ class UserNode(DjangoObjectType):
         model = User
         fields = ['username', 'first_name', 'last_name']
         interfaces = (relay.Node,)
+    has_started = graphene.Boolean(required=False)
+
+    def resolve_has_started(self, info):
+        if info.context.user == self:
+            return self.has_started
+        return None
 
     @classmethod
     def get_node(cls, info, id):
