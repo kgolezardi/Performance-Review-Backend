@@ -1,19 +1,65 @@
-version: '3.4'
+version: '3.5'
+
 services:
+  gateway:
+    # The official v2.0 Traefik docker image
+    image: traefik:v2.0
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker --providers.docker.exposedByDefault=false
+    networks:
+      - gateway
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  front:
+    image: kgolezardi/performance-review-web:latest
+    networks:
+      - gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.front.rule=Host(`${SITE_DOMAIN}`)"
+      - "traefik.http.routers.front.priority=10"
+
+  static:
+    image: kgolezardi/performance-review-statics:latest
+    networks:
+      - gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.static.rule=Host(`${ADMIN_DOMAIN}`) && PathPrefix(`/django-static/`)"
+      - "traefik.http.routers.static.priority=20"
+
   api:
-    image: kgolezardi/performance-review-backend:latest
+    image: kgolezardi/performance-review-api:latest
+    networks:
+      - app_net
+      - gateway
     depends_on:
       - database
-    ports:
-      - 8000:8000
     environment:
       - DEBUG
       - SECRET_KEY
       - DATABASE_URL
       - ALLOWED_HOSTS
       - CORS_ALLOW_CREDENTIALS
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`${SITE_DOMAIN}`) && PathPrefix(`/graphql`)"
+      - "traefik.http.routers.api.priority=30"
+      - "traefik.http.routers.admin.rule=Host(`${ADMIN_DOMAIN}`)"
+      - "traefik.http.routers.admin.priority=10"
+
+
   database:
     image: postgres:12.1
+    networks:
+      - app_net
     environment:
       - POSTGRES_USER
       - POSTGRES_DB
@@ -21,7 +67,18 @@ services:
     volumes:
       - database-data:/var/lib/postgresql/data
 
-
 volumes:
   database-data:
 
+networks:
+  gateway:
+    name: "gateway"
+    ipam:
+      driver: default
+      config:
+        - subnet: ${GATEWAY_SUB_NET}
+  app_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${APP_SUB_NET}

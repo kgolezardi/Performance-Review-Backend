@@ -21,6 +21,7 @@ RUN poetry install -n --no-dev
 
 # now actually copy the real contents of my app
 COPY . .
+RUN touch .env
 
 EXPOSE 8000
 
