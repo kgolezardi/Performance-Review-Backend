@@ -2,7 +2,7 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from accounts.interactors import get_all_users, get_user
+from accounts.interactors import get_all_users, get_user, is_valid_user
 from ..models import User
 
 
@@ -33,6 +33,6 @@ class Query(graphene.ObjectType):
     me = graphene.Field(UserNode)
 
     def resolve_me(self, info):
-        if info.context.user.is_authenticated:
+        if is_valid_user(info.context.user):
             return info.context.user
         return None

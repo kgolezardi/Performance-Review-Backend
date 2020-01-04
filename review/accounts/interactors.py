@@ -16,6 +16,10 @@ def get_all_users(user):
     return User.objects.none()
 
 
+def is_valid_user(user):
+    return user in get_all_users(user)
+
+
 def get_user(user, id):
     return get_all_users(user).get(id=id)
 
