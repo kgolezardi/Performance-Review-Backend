@@ -83,9 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'review.wsgi.application'
 
-LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'core:overview'
-LOGOUT_REDIRECT_URL = 'core:overview'
 AUTH_USER_MODEL = 'accounts.User'
 
 # Database
