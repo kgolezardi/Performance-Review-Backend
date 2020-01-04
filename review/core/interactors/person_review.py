@@ -1,5 +1,5 @@
 from core.enums import Phase
-from core.interactors.settings import is_at_current_phase
+from core.interactors.settings import is_at_phase
 from core.models import PersonReview, ProjectReview
 
 
@@ -8,11 +8,11 @@ def can_review_person(user, reviewee):
         return False
 
     if user == reviewee:
-        if not is_at_current_phase(Phase.SELF_REVIEW):
+        if not is_at_phase(Phase.SELF_REVIEW):
             return False
         return True
 
-    if not is_at_current_phase(Phase.PEER_REVIEW):
+    if not is_at_phase(Phase.PEER_REVIEW):
         return False
 
     try:
@@ -45,13 +45,13 @@ def save_person_review(reviewee, reviewer, **kwargs):
 
 
 def get_all_person_reviews(user):
-    if is_at_current_phase(Phase.SELF_REVIEW):
+    if is_at_phase(Phase.SELF_REVIEW):
         return PersonReview.objects.filter(reviewer=user, reviewee=user)
-    if is_at_current_phase(Phase.PEER_REVIEW):
+    if is_at_phase(Phase.PEER_REVIEW):
         return PersonReview.objects.filter(reviewer=user).exclude(reviewee=user)
-    if is_at_current_phase(Phase.MANAGER_REVIEW):
+    if is_at_phase(Phase.MANAGER_REVIEW):
         return PersonReview.objects.filter(reviewee__manager=user)
-    if is_at_current_phase(Phase.RESULTS):
+    if is_at_phase(Phase.RESULTS):
         return PersonReview.objects.filter(reviewee=user)
     return PersonReview.objects.none()
 
