@@ -76,4 +76,4 @@ class Settings(models.Model):
         try:
             return cls.objects.get()
         except cls.DoesNotExist:
-            return cls()
+            return cls.objects.get_or_create(phase=Phase.SELF_REVIEW.value)

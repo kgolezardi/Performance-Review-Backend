@@ -1,5 +1,5 @@
 from core.enums import Phase
-from core.interactors.settings import is_at_current_phase
+from core.interactors.settings import is_at_phase
 from core.models import ProjectReview
 
 
@@ -29,13 +29,13 @@ def save_project_review(project, reviewee, **kwargs):
 
 
 def get_all_project_reviews(user):
-    if is_at_current_phase(Phase.SELF_REVIEW):
+    if is_at_phase(Phase.SELF_REVIEW):
         return ProjectReview.objects.filter(reviewee=user)
-    if is_at_current_phase(Phase.PEER_REVIEW):
+    if is_at_phase(Phase.PEER_REVIEW):
         return ProjectReview.objects.filter(reviewers=user)
-    if is_at_current_phase(Phase.MANAGER_REVIEW):
+    if is_at_phase(Phase.MANAGER_REVIEW):
         return ProjectReview.objects.filter(reviewee__manager=user)
-    if is_at_current_phase(Phase.RESULTS):
+    if is_at_phase(Phase.RESULTS):
         return ProjectReview.objects.filter(reviewee=user)
     return ProjectReview.objects.none()
 
@@ -44,7 +44,7 @@ def get_or_create_project_review(project, reviewee):
     if not reviewee.is_authenticated:
         return None
 
-    if not is_at_current_phase(Phase.SELF_REVIEW):
+    if not is_at_phase(Phase.SELF_REVIEW):
         return None
 
     project_review, created = ProjectReview.objects.get_or_create(project=project, reviewee=reviewee)
@@ -65,7 +65,7 @@ def delete_project_review(user, project_review):
     if project_review.reviewee != user:
         return None
 
-    if not is_at_current_phase(Phase.SELF_REVIEW):
+    if not is_at_phase(Phase.SELF_REVIEW):
         return None
 
     project_review_id = project_review.id

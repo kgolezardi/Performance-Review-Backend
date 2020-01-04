@@ -3,7 +3,9 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 
 from accounts.schema.user_query import UserNode
+from core.enums import Phase
 from core.interactors.project_review import get_all_project_reviews, get_project_review
+from core.interactors.settings import is_at_phase
 from core.schema.enums import Evaluation
 from ..models import ProjectReview
 
@@ -12,6 +14,7 @@ class ProjectReviewNode(DjangoObjectType):
     class Meta:
         model = ProjectReview
         fields = [
+            'reviewee',
             'project',
             'text',
         ]
@@ -21,6 +24,8 @@ class ProjectReviewNode(DjangoObjectType):
     reviewers = graphene.List(graphene.NonNull(UserNode), required=True)
 
     def resolve_reviewers(self, info):
+        if not is_at_phase(Phase.SELF_REVIEW):
+            return ProjectReview.objects.none()
         return self.reviewers.all()
 
     @classmethod
