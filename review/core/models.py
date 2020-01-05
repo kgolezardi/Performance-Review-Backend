@@ -57,6 +57,8 @@ class PersonReview(models.Model):
     weaknesses = ArrayField(models.CharField(max_length=128), size=3, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    final_submit = models.BooleanField(default=False, null=False, blank=False)
+
     class Meta:
         ordering = ['created_at']
 
