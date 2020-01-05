@@ -69,3 +69,14 @@ def get_person_review(user, id):
         return get_all_person_reviews(user).get(id=id)
     except PersonReview.DoesNotExist:
         return None
+
+
+def finalize_submission(reviewee, reviewer):
+    person_review = get_or_create_person_review(reviewee=reviewee, reviewer=reviewer)
+
+    if person_review is None:
+        return None
+
+    person_review.final_submit = True
+    person_review.save()
+    return person_review
