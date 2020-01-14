@@ -5,8 +5,7 @@ class Evaluation(BaseEnum):
     NEEDS_IMPROVEMENT = 1
     MEETS_EXPECTATIONS = 2
     EXCEEDS_EXPECTATIONS = 3
-    STRONGLY_EXCEEDS_EXPECTATIONS = 4
-    SUPERB = 5
+    SUPERB = 4
 
 
 class Phase(BaseEnum):
