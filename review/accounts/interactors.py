@@ -1,3 +1,5 @@
+from django.db import IntegrityError
+
 from accounts.models import User
 
 
@@ -30,3 +32,20 @@ def start_review(user):
         user.save()
         return True
     return False
+
+
+def add_user(username, password, first_name, last_name, email, employee_id, manager=None):
+    user = User(username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                employee_id=employee_id,
+                manager=manager)
+    user.set_password(password)
+
+    try:
+        user.save()
+        return True
+    except IntegrityError:
+        return False
+
