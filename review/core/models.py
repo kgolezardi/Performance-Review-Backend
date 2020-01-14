@@ -65,6 +65,8 @@ class PersonReview(models.Model):
 
 class Settings(models.Model):
     phase = models.IntegerField(choices=Phase.choices(), null=False, blank=False)
+    due_date = models.DateTimeField(null=True)
+    login_background_image = models.CharField(max_length=512, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "settings"
