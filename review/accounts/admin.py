@@ -35,7 +35,6 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
             successful, unsuccessful = 0, 0
             for row in reader:
                 success = False
-                print(row)
                 if CsvRowValidationForm(row).is_valid():
                     username = row['email'].split('@')[0]
                     success = add_user(username=username, **row)

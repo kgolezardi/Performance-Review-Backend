@@ -35,7 +35,6 @@ def start_review(user):
 
 
 def add_user(username, password, first_name, last_name, email, employee_id, manager=None):
-    print('adding', username)
     user = User(username=username,
                 first_name=first_name,
                 last_name=last_name,
