@@ -13,3 +13,4 @@ class Phase(BaseEnum):
     PEER_REVIEW = 2
     MANAGER_REVIEW = 3
     RESULTS = 4
+    IDLE = 5
