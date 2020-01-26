@@ -7,7 +7,9 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path
 
-from accounts.interactors import add_user
+from accounts.interactors import add_user, get_user_progress
+from core.enums import Phase
+from core.interactors.settings import is_at_phase
 from .forms import UserCreationForm, UserChangeForm, CsvRowValidationForm, CsvImportForm
 from .models import User
 
@@ -17,7 +19,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('username', 'email')
+    list_display = ('username', 'get_name', 'get_progess')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
         ('Reiew data', {'fields': ('has_started',)}),
     )
@@ -57,3 +59,16 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
         }
         return TemplateResponse(request, 'accounts/import_users.html', context)
 
+    def get_name(self, obj):
+        return obj.first_name + ' ' + obj.last_name
+    get_name.short_description = 'Name'
+
+    def get_progess(self, obj):
+        if is_at_phase(Phase.SELF_REVIEW):
+            progress = get_user_progress(obj)
+            res = 'Criteria: %d%% - SW: %d%% - P: %s' % (progress['performance_competencies'],
+                                                         progress['dominant_characteristics'],
+                                                         list(map(int, progress['projects'])))
+            return res
+        return ''
+    get_progess.short_description = 'Progress'
