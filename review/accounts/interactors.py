@@ -73,7 +73,7 @@ def get_person_review_progress(person_review):
 def get_project_review_progress(project_review):
     text = 1 if project_review.text else 0
     rating = 1 if project_review.rating else 0
-    reviewers = 1 if project_review.reviewers else 0
+    reviewers = 1 if project_review.reviewers.all() else 0
     return (1 * rating + 6 * text + 3 * reviewers) / 10 * 100
 
 
