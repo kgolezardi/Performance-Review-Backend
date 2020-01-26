@@ -10,7 +10,7 @@ from core.schema.enums import Phase
 class SettingsNode(DjangoObjectType):
     class Meta:
         model = Settings
-        fields = ['due_date', 'login_background_image']
+        fields = ['due_date', 'login_background_image', 'idle_page_url']
         interfaces = (relay.Node,)
 
     phase = Phase(required=True)
