@@ -94,3 +94,7 @@ def get_user_progress(user):
 
         return res
     return {}
+
+
+def is_manager(user):
+    return User.objects.filter(manager=user).exists()
