@@ -19,9 +19,9 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('username', 'get_name', 'get_progess')
+    list_display = ('username', 'get_name', 'get_progess', 'manager')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
-        ('Reiew data', {'fields': ('has_started',)}),
+        ('Reiew data', {'fields': ('has_started', 'manager')}),
     )
     list_filter = django.contrib.auth.admin.UserAdmin.list_filter + ('has_started',)
     change_list_template = 'accounts/change_list_with_import.html'
