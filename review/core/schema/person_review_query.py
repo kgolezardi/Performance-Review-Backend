@@ -33,6 +33,11 @@ class PersonReviewNode(DjangoObjectType):
     leadership_rating = Evaluation()
     presence_rating = Evaluation()
 
+    is_self_review = graphene.NonNull(graphene.Boolean)
+
+    def resolve_is_self_review(self, info):
+        return self.is_self_review()
+
     @classmethod
     def get_node(cls, info, id):
         return get_person_review(info.context.user, id)
