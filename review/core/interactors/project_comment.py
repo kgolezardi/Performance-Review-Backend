@@ -4,9 +4,9 @@ from core.models import ProjectComment
 
 
 def can_review_project(user, project_review):
-    if not is_at_phase(Phase.PEER_REVIEW):
-        return False
-    return user in project_review.reviewers.all()
+    if is_at_phase(Phase.PEER_REVIEW):
+        return user in project_review.reviewers.all()
+    return False
 
 
 def save_project_comment(project_review, reviewer, **kwargs):
