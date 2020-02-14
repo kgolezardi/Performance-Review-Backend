@@ -59,6 +59,9 @@ class PersonReview(models.Model):
 
     final_submit = models.BooleanField(default=False, null=False, blank=False)
 
+    def is_self_review(self):
+        return self.reviewee == self.reviewer
+
     class Meta:
         ordering = ['created_at']
 
