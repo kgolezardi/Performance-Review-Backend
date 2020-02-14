@@ -29,6 +29,8 @@ def save_project_review(project, reviewee, **kwargs):
 
 
 def get_all_project_reviews(user):
+    if not user.is_authenticated:
+        return  ProjectReview.objects.none()
     if is_at_phase(Phase.SELF_REVIEW):
         return ProjectReview.objects.filter(reviewee=user)
     if is_at_phase(Phase.PEER_REVIEW):

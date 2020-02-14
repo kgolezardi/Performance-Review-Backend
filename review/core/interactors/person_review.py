@@ -7,19 +7,16 @@ def can_review_person(user, reviewee):
     if not user.is_authenticated:
         return False
 
-    if user == reviewee:
-        if not is_at_phase(Phase.SELF_REVIEW):
-            return False
-        return True
-
-    if not is_at_phase(Phase.PEER_REVIEW):
+    if is_at_phase(Phase.SELF_REVIEW):
+        if user == reviewee:
+            return True
         return False
 
-    try:
-        ProjectReview.objects.get(reviewee=reviewee, reviewers=user)
-    except ProjectReview.DoesNotExist:
+    if is_at_phase(Phase.PEER_REVIEW):
+        if ProjectReview.objects.filter(reviewee=reviewee, reviewers=user).exists():
+            return True
         return False
-    return True
+    return False
 
 
 def save_person_review(reviewee, reviewer, **kwargs):
@@ -45,6 +42,8 @@ def save_person_review(reviewee, reviewer, **kwargs):
 
 
 def get_all_person_reviews(user):
+    if not user.is_authenticated:
+        return PersonReview.objects.none()
     if is_at_phase(Phase.SELF_REVIEW):
         return PersonReview.objects.filter(reviewer=user, reviewee=user)
     if is_at_phase(Phase.PEER_REVIEW):
