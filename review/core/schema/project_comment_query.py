@@ -4,7 +4,6 @@ from graphene_django import DjangoObjectType
 
 from core.interactors.project_comment import get_all_project_comments, get_project_comment
 from core.schema.enums import Evaluation
-from core.schema.project_review_query import ProjectReviewNode
 from ..models import ProjectComment
 
 
@@ -15,8 +14,8 @@ class ProjectCommentNode(DjangoObjectType):
             'text',
         ]
         interfaces = (relay.Node,)
+
     rating = Evaluation()
-    project_review = graphene.Field(ProjectReviewNode)
 
     @classmethod
     def get_node(cls, info, id):

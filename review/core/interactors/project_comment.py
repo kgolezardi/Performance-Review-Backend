@@ -26,6 +26,8 @@ def save_project_comment(project_review, reviewer, **kwargs):
 
 
 def get_all_project_comments(user):
+    if not user.is_authenticated:
+        return ProjectComment.objects.none()
     if is_at_phase(Phase.PEER_REVIEW):
         return ProjectComment.objects.filter(reviewer=user)
     if is_at_phase(Phase.MANAGER_REVIEW):
@@ -33,6 +35,10 @@ def get_all_project_comments(user):
     if is_at_phase(Phase.RESULTS):
         return ProjectComment.objects.filter(project_review__reviewee=user)
     return ProjectComment.objects.none()
+
+
+def get_project_review_comments(user, project_review):
+    return get_all_project_comments(user).filter(project_review=project_review)
 
 
 def get_project_comment(user, id):

@@ -4,9 +4,11 @@ from graphene_django import DjangoObjectType
 
 from accounts.schema.user_query import UserNode
 from core.enums import Phase
+from core.interactors.project_comment import get_project_review_comments
 from core.interactors.project_review import get_all_project_reviews, get_project_review
 from core.interactors.settings import is_at_phase
 from core.schema.enums import Evaluation
+from .project_comment_query import ProjectCommentNode
 from ..models import ProjectReview
 
 
@@ -22,11 +24,15 @@ class ProjectReviewNode(DjangoObjectType):
 
     rating = Evaluation()
     reviewers = graphene.List(graphene.NonNull(UserNode), required=True)
+    comments = graphene.List(graphene.NonNull(ProjectCommentNode), required=True)
 
     def resolve_reviewers(self, info):
         if not is_at_phase(Phase.SELF_REVIEW):
             return ProjectReview.objects.none()
         return self.reviewers.all()
+
+    def resolve_comments(self, info):
+        return get_project_review_comments(info.context.user, self)
 
     @classmethod
     def get_node(cls, info, id):
