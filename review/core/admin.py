@@ -4,7 +4,12 @@ from core.models import Project, ProjectReview, PersonReview, ProjectComment, Se
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
-    list_display = ('project', 'reviewee')
+    list_display = ('project', 'reviewee', 'get_reviewers')
+
+    def get_reviewers(self, obj):
+        return ', '.join(obj.reviewers.values_list('username', flat=True))
+
+    get_reviewers.short_description = 'reviewers'
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):
@@ -12,10 +17,12 @@ class ProjectCommentAdmin(admin.ModelAdmin):
 
     def get_project(self, obj):
         return obj.project_review.project
+
     get_project.short_description = 'Project'
 
     def get_reviewee(self, obj):
         return obj.project_review.reviewee
+
     get_reviewee.short_description = 'Reviewee'
 
 

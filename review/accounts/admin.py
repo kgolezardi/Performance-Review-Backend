@@ -9,6 +9,7 @@ from django.urls import path
 
 from accounts.interactors import add_user, get_user_progress
 from core.enums import Phase
+from core.interactors.project_review import get_users_to_review
 from core.interactors.settings import is_at_phase
 from .forms import UserCreationForm, UserChangeForm, CsvRowValidationForm, CsvImportForm
 from .models import User
@@ -19,7 +20,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('username', 'get_name', 'get_progess', 'manager')
+    list_display = ('username', 'get_name', 'get_progess', 'manager', 'get_users_to_review')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
         ('Reiew data', {'fields': ('has_started', 'manager')}),
     )
@@ -61,6 +62,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
 
     def get_name(self, obj):
         return obj.first_name + ' ' + obj.last_name
+
     get_name.short_description = 'Name'
 
     def get_progess(self, obj):
@@ -71,4 +73,10 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
                                                          list(map(int, progress['projects'])))
             return res
         return ''
+
     get_progess.short_description = 'Progress'
+
+    def get_users_to_review(self, obj):
+        return ', '.join(get_users_to_review(obj).values_list('username', flat=True))
+
+    get_users_to_review.short_description = 'users to review'

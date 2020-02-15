@@ -1,3 +1,4 @@
+from accounts.models import User
 from core.enums import Phase
 from core.interactors.settings import is_at_phase
 from core.models import ProjectReview
@@ -30,7 +31,7 @@ def save_project_review(project, reviewee, **kwargs):
 
 def get_all_project_reviews(user):
     if not user.is_authenticated:
-        return  ProjectReview.objects.none()
+        return ProjectReview.objects.none()
     if is_at_phase(Phase.SELF_REVIEW):
         return ProjectReview.objects.filter(reviewee=user)
     if is_at_phase(Phase.PEER_REVIEW):
@@ -73,3 +74,13 @@ def delete_project_review(user, project_review):
     project_review_id = project_review.id
     project_review.delete()
     return project_review_id
+
+
+def get_users_to_review(user):
+    if not user.is_authenticated:
+        return User.objects.none()
+    if is_at_phase(Phase.MANAGER_REVIEW):
+        return User.objects.filter(manager=user)
+    if is_at_phase(Phase.PEER_REVIEW):
+        return ProjectReview.objects.filter(reviewers=user).select_related('reviewee')
+    return User.objects.none()
