@@ -43,7 +43,7 @@ class ProjectReviewQuery(graphene.ObjectType):
     project_review = relay.Node.Field(ProjectReviewNode)
     project_reviews = graphene.List(graphene.NonNull(ProjectReviewNode), required=True)
 
-    users_to_review = graphene.List(graphene.NonNull(UserNode))
+    users_to_review = graphene.List(graphene.NonNull(UserNode), required=True)
 
     def resolve_project_reviews(self, info):
         return get_all_project_reviews(info.context.user)
