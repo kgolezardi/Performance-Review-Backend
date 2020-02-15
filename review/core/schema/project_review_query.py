@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from accounts.schema.user_query import UserNode
 from core.enums import Phase
 from core.interactors.project_comment import get_project_review_comments
-from core.interactors.project_review import get_all_project_reviews, get_project_review
+from core.interactors.project_review import get_all_project_reviews, get_project_review, get_users_to_review
 from core.interactors.settings import is_at_phase
 from core.schema.enums import Evaluation
 from .project_comment_query import ProjectCommentNode
@@ -43,5 +43,10 @@ class ProjectReviewQuery(graphene.ObjectType):
     project_review = relay.Node.Field(ProjectReviewNode)
     project_reviews = graphene.List(graphene.NonNull(ProjectReviewNode), required=True)
 
+    users_to_review = graphene.List(graphene.NonNull(UserNode))
+
     def resolve_project_reviews(self, info):
         return get_all_project_reviews(info.context.user)
+
+    def resolve_users_to_review(self, info):
+        return get_users_to_review(info.context.user)
