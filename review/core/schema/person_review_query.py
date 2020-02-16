@@ -22,7 +22,6 @@ class PersonReviewNode(DjangoObjectType):
             'presence_comment',
             'strengths',
             'weaknesses',
-            'final_submit',
         ]
         interfaces = (relay.Node,)
 
