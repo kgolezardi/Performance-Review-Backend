@@ -79,4 +79,4 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     def get_users_to_review(self, obj):
         return ', '.join(get_users_to_review(obj).values_list('username', flat=True))
 
-    get_users_to_review.short_description = 'users to review'
+    get_users_to_review.short_description = 'Users to review'
