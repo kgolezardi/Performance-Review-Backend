@@ -18,11 +18,15 @@ class Extension(BaseType):
 
         base = options['base']
 
-        base._meta.fields.update(fields)
-
         for name in fields.keys():
+            assert name not in base._meta.fields, "{name} already exists in {base}".format(name=name,
+                                                                                           base=base.__name__)
+
+            assert not hasattr(base, "resolve_{}".format(name)), "{base} already has {name} resolver".format(name=name,
+                                                                                                             base=base.__name__)
             resolver = getattr(cls, "resolve_{}".format(name), None)
             if resolver:
                 setattr(base, "resolve_{}".format(name), resolver)
 
+        base._meta.fields.update(fields)
         super(Extension, cls).__init_subclass_with_meta__()
