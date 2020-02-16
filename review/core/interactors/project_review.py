@@ -82,5 +82,5 @@ def get_users_to_review(user):
     if is_at_phase(Phase.MANAGER_REVIEW):
         return User.objects.filter(manager=user)
     if is_at_phase(Phase.PEER_REVIEW):
-        return ProjectReview.objects.filter(reviewers=user).select_related('reviewee')
+        return User.objects.filter(projectreview__reviewers=user)
     return User.objects.none()

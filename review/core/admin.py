@@ -9,7 +9,7 @@ class ProjectReviewAdmin(admin.ModelAdmin):
     def get_reviewers(self, obj):
         return ', '.join(obj.reviewers.values_list('username', flat=True))
 
-    get_reviewers.short_description = 'reviewers'
+    get_reviewers.short_description = 'Reviewers'
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):
