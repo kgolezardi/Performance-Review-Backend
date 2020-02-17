@@ -1,4 +1,4 @@
-from core.enums import Phase
+from core.enums import Phase, State
 from core.interactors.settings import is_at_phase
 from core.models import PersonReview, ProjectReview
 
@@ -36,6 +36,11 @@ def save_person_review(reviewee, reviewer, **kwargs):
                 value = value[:3]
 
             person_review.__setattr__(field, value)
+
+    state = kwargs.get('state', None)
+    if state is None:
+        state = State.DOING.value
+    person_review.state = state
 
     person_review.save()
     return person_review

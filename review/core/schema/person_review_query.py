@@ -4,7 +4,7 @@ from graphene_django import DjangoObjectType
 
 from accounts.models import User
 from core.interactors.person_review import get_or_create_person_review, get_all_person_reviews, get_person_review
-from core.schema.enums import Evaluation
+from core.schema.enums import Evaluation, State
 from graphql_api.schema.utils import get_node
 from ..models import PersonReview
 
@@ -31,6 +31,7 @@ class PersonReviewNode(DjangoObjectType):
     thought_leadership_rating = Evaluation()
     leadership_rating = Evaluation()
     presence_rating = Evaluation()
+    state = State()
 
     is_self_review = graphene.NonNull(graphene.Boolean)
 

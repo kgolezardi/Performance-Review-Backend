@@ -14,3 +14,9 @@ class Phase(BaseEnum):
     MANAGER_REVIEW = 3
     RESULTS = 4
     IDLE = 5
+
+
+class State(BaseEnum):
+    TODO = 1
+    DOING = 2
+    DONE = 3
