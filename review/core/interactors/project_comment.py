@@ -1,4 +1,5 @@
 from core.enums import Phase
+from core.interactors.person_review import save_person_review
 from core.interactors.settings import is_at_phase
 from core.models import ProjectComment
 
@@ -22,6 +23,8 @@ def save_project_comment(project_review, reviewer, **kwargs):
             project_comment.__setattr__(field, value)
 
     project_comment.save()
+    # save person review to update peer review state
+    save_person_review(reviewee=project_review.reviewee, reviewer=reviewer)
     return project_comment
 
 

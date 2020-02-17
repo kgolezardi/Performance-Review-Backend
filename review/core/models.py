@@ -2,7 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from accounts.models import User
-from core.enums import Evaluation, Phase
+from core.enums import Evaluation, Phase, State
 
 
 class Project(models.Model):
@@ -56,6 +56,8 @@ class PersonReview(models.Model):
     strengths = ArrayField(models.CharField(max_length=280), size=3, null=True, blank=True)
     weaknesses = ArrayField(models.CharField(max_length=280), size=3, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    state = models.IntegerField(choices=State.choices(), default=State.TODO.value)
 
     def is_self_review(self):
         return self.reviewee == self.reviewer
