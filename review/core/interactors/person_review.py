@@ -60,6 +60,10 @@ def get_all_person_reviews(user):
     return PersonReview.objects.none()
 
 
+def get_user_person_reviews(user, reviewee):
+    return get_all_person_reviews(user).filter(reviewee=reviewee)
+
+
 def get_or_create_person_review(*, reviewee, reviewer):
     if not can_review_person(reviewer, reviewee):
         return None
