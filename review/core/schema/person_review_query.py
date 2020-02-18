@@ -34,7 +34,7 @@ class PersonReviewNode(DjangoObjectType):
     thought_leadership_rating = Evaluation()
     leadership_rating = Evaluation()
     presence_rating = Evaluation()
-    state = State()
+    state = graphene.Field(State, required=True)
 
     is_self_review = graphene.NonNull(graphene.Boolean)
 
