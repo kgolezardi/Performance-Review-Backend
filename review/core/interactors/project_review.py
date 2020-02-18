@@ -43,6 +43,10 @@ def get_all_project_reviews(user):
     return ProjectReview.objects.none()
 
 
+def get_user_project_reviews(user, reviewee):
+    return get_all_project_reviews(user).filter(reviewee=reviewee)
+
+
 def get_or_create_project_review(project, reviewee):
     if not reviewee.is_authenticated:
         return None

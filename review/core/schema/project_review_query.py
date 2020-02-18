@@ -5,9 +5,11 @@ from graphene_django import DjangoObjectType
 from accounts.models import User
 from accounts.schema.user_query import UserNode
 from core.enums import Phase
-from core.interactors.project_review import get_all_project_reviews, get_project_review, get_users_to_review
+from core.interactors.project_review import get_all_project_reviews, get_project_review, get_users_to_review, \
+    get_user_project_reviews
 from core.interactors.settings import is_at_phase
 from core.schema.enums import Evaluation
+from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
 from ..models import ProjectReview
 
@@ -35,6 +37,18 @@ class ProjectReviewNode(DjangoObjectType):
         return get_project_review(info.context.user, id)
 
 
+class UserNodeProjectReviewExtension(Extension):
+    class Meta:
+        base = UserNode
+
+    project_reviews = graphene.List(graphene.NonNull(ProjectReviewNode), required=True,
+                                    description="list of project reviews about this user")
+
+    def resolve_project_reviews(self, info):
+        user = info.context.user
+        return get_user_project_reviews(user, reviewee=self)
+
+
 class ProjectReviewQuery(graphene.ObjectType):
     project_review = relay.Node.Field(ProjectReviewNode)
     project_reviews = graphene.List(graphene.NonNull(ProjectReviewNode), reviewee_id=graphene.ID(), required=True)
@@ -43,11 +57,10 @@ class ProjectReviewQuery(graphene.ObjectType):
 
     def resolve_project_reviews(self, info, reviewee_id=None):
         user = info.context.user
-        project_reviews = get_all_project_reviews(user=user)
-        if reviewee_id is not None:
-            reviewee = get_node(reviewee_id, info, User)
-            project_reviews = project_reviews.filter(reviewee=reviewee)
-        return project_reviews
+        if reviewee_id is None:
+            return get_all_project_reviews(user=user)
+        reviewee = get_node(reviewee_id, info, User)
+        return get_user_project_reviews(user=user, reviewee=reviewee)
 
     def resolve_users_to_review(self, info):
         return get_users_to_review(info.context.user)

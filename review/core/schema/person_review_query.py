@@ -3,8 +3,11 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 
 from accounts.models import User
-from core.interactors.person_review import get_or_create_person_review, get_all_person_reviews, get_person_review
+from accounts.schema.user_query import UserNode
+from core.interactors.person_review import get_or_create_person_review, get_all_person_reviews, get_person_review, \
+    get_user_person_reviews
 from core.schema.enums import Evaluation, State
+from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
 from ..models import PersonReview
 
@@ -41,6 +44,24 @@ class PersonReviewNode(DjangoObjectType):
     @classmethod
     def get_node(cls, info, id):
         return get_person_review(info.context.user, id)
+
+
+class UserNodePersonReviewExtension(Extension):
+    class Meta:
+        base = UserNode
+
+    person_review = graphene.Field(PersonReviewNode,
+                                   description="get or create a person review about this user from logged in user")
+    person_reviews = graphene.List(graphene.NonNull(PersonReviewNode), required=True,
+                                   description="list of person reviews about this user")
+
+    def resolve_person_review(self, info):
+        reviewer = info.context.user
+        return get_or_create_person_review(reviewee=self, reviewer=reviewer)
+
+    def resolve_person_reviews(self, info):
+        user = info.context.user
+        return get_user_person_reviews(user, reviewee=self)
 
 
 class PersonReviewQuery(graphene.ObjectType):
