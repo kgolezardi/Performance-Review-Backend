@@ -3,7 +3,7 @@ from graphene import ClientIDMutation
 
 from accounts.models import User
 from core.interactors.person_review import save_person_review
-from core.schema.enums import Evaluation
+from core.schema.enums import Evaluation, State
 from core.schema.person_review_query import PersonReviewNode
 from graphql_api.schema.utils import get_node
 from graphql_api.schema.with_viewer import WithViewer
@@ -26,6 +26,8 @@ class SavePersonReviewMutation(WithViewer, ClientIDMutation):
         presence_comment = graphene.String()
         strengths = graphene.List(graphene.NonNull(graphene.String))
         weaknesses = graphene.List(graphene.NonNull(graphene.String))
+
+        state = State()
 
     person_review = graphene.Field(PersonReviewNode)
 
