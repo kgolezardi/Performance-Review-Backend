@@ -22,7 +22,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     model = User
     list_display = ('username', 'get_name', 'get_progess', 'manager', 'get_users_to_review')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
-        ('Reiew data', {'fields': ('has_started', 'manager')}),
+        ('Reiew data', {'fields': ('has_started', 'manager', 'avatar_url')}),
     )
     list_filter = django.contrib.auth.admin.UserAdmin.list_filter + ('has_started',)
     change_list_template = 'accounts/change_list_with_import.html'
