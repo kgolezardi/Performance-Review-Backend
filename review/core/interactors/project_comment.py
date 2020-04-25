@@ -1,7 +1,7 @@
 from core.enums import Phase
 from core.interactors.person_review import save_person_review
 from core.interactors.settings import is_at_phase
-from core.models import ProjectComment
+from core.models import ProjectComment, MAX_TEXT_LENGTH
 
 
 def can_review_project(user, project_review):
@@ -20,6 +20,8 @@ def save_project_comment(project_review, reviewer, **kwargs):
     for field in fields:
         value = kwargs.get(field, None)
         if value is not None:
+            if field in ['text']:
+                value = value[:MAX_TEXT_LENGTH]
             project_comment.__setattr__(field, value)
 
     project_comment.save()
