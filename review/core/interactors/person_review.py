@@ -1,6 +1,6 @@
 from core.enums import Phase, State
 from core.interactors.settings import is_at_phase
-from core.models import PersonReview, ProjectReview
+from core.models import PersonReview, ProjectReview, MAX_TEXT_LENGTH
 
 
 def can_review_person(user, reviewee):
@@ -32,8 +32,15 @@ def save_person_review(reviewee, reviewer, **kwargs):
     for field in fields:
         value = kwargs.get(field, None)
         if value is not None:
+            if field in ['sahabiness_comment',
+                         'problem_solving_comment',
+                         'execution_comment',
+                         'thought_leadership_comment',
+                         'leadership_comment',
+                         'presence_comment']:
+                value = value[:MAX_TEXT_LENGTH]
             if field in ['strengths', 'weaknesses']:
-                value = value[:3]
+                value = list(map(lambda v: v[:MAX_TEXT_LENGTH], value[:3]))
 
             person_review.__setattr__(field, value)
 

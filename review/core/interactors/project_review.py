@@ -1,7 +1,7 @@
 from accounts.models import User
 from core.enums import Phase
 from core.interactors.settings import is_at_phase
-from core.models import ProjectReview
+from core.models import ProjectReview, MAX_TEXT_LENGTH
 
 
 def save_project_review(project, reviewee, **kwargs):
@@ -14,6 +14,8 @@ def save_project_review(project, reviewee, **kwargs):
     for field in fields:
         value = kwargs.get(field, None)
         if value is not None:
+            if field in ['text']:
+                value = value[:MAX_TEXT_LENGTH]
             project_review.__setattr__(field, value)
 
     reviewers = kwargs.get('reviewers', None)
