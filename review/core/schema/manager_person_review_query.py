@@ -4,7 +4,7 @@ from graphene_django import DjangoObjectType
 
 from accounts.models import User
 from accounts.schema.user_query import UserNode
-from core.interactors.manager_review import get_or_create_manager_person_review, get_all_manager_person_reviews, \
+from core.interactors.manager_person_review import get_or_create_manager_person_review, get_all_manager_person_reviews, \
     get_manager_person_review
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension

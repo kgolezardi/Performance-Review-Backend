@@ -2,7 +2,7 @@ import graphene
 from graphene import ClientIDMutation
 
 from accounts.models import User
-from core.interactors.manager_review import save_manager_person_review
+from core.interactors.manager_person_review import save_manager_person_review
 from core.schema.enums import Evaluation
 from core.schema.manager_person_review_query import ManagerPersonReviewNode
 from graphql_api.schema.utils import get_node
