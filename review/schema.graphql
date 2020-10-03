@@ -1,0 +1,294 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+input ChangePasswordMutationInput {
+  oldPassword: String!
+  newPassword: String!
+  clientMutationId: String
+}
+
+type ChangePasswordMutationPayload {
+  viewer: ViewerNode!
+  ok: Boolean!
+  clientMutationId: String
+}
+
+scalar DateTime
+
+input DeleteProjectReviewMutationInput {
+  projectReviewId: ID!
+  clientMutationId: String
+}
+
+type DeleteProjectReviewMutationPayload {
+  viewer: ViewerNode!
+  deletedProjectReviewId: ID
+  clientMutationId: String
+}
+
+enum Evaluation {
+  NEEDS_IMPROVEMENT
+  MEETS_EXPECTATIONS
+  EXCEEDS_EXPECTATIONS
+  SUPERB
+}
+
+input LoginMutationInput {
+  username: String!
+  password: String!
+  clientMutationId: String
+}
+
+type LoginMutationPayload {
+  viewer: ViewerNode!
+  user: UserNode
+  clientMutationId: String
+}
+
+input LogoutMutationInput {
+  clientMutationId: String
+}
+
+type LogoutMutationPayload {
+  viewer: ViewerNode!
+  clientMutationId: String
+}
+
+type ManagerPersonReviewNode implements Node {
+  reviewee: UserNode!
+  id: ID!
+  sahabinessRating: Evaluation
+  problemSolvingRating: Evaluation
+  executionRating: Evaluation
+  thoughtLeadershipRating: Evaluation
+  leadershipRating: Evaluation
+  presenceRating: Evaluation
+  overallRating: Evaluation
+}
+
+type ManagerProjectCommentNode implements Node {
+  projectReview: ProjectReviewNode!
+  id: ID!
+  rating: Evaluation
+}
+
+type Mutation {
+  savePersonReview(input: SavePersonReviewMutationInput!): SavePersonReviewMutationPayload!
+  saveProjectReview(input: SaveProjectReviewMutationInput!): SaveProjectReviewMutationPayload!
+  deleteProjectReview(input: DeleteProjectReviewMutationInput!): DeleteProjectReviewMutationPayload!
+  saveProjectComment(input: SaveProjectCommentMutationInput!): SaveProjectCommentMutationPayload!
+  saveManagerPersonReview(input: SaveManagerPersonReviewMutationInput!): SaveManagerPersonReviewMutationPayload!
+  saveManagerProjectComment(input: SaveManagerProjectCommentMutationInput!): SaveManagerProjectCommentMutationPayload!
+  login(input: LoginMutationInput!): LoginMutationPayload!
+  logout(input: LogoutMutationInput!): LogoutMutationPayload!
+  changePassword(input: ChangePasswordMutationInput!): ChangePasswordMutationPayload!
+  startReview(input: StartReviewMutationInput!): StartReviewMutationPayload!
+}
+
+interface Node {
+  id: ID!
+}
+
+type PersonReviewNode implements Node {
+  reviewee: UserNode!
+  sahabinessComment: String
+  problemSolvingComment: String
+  executionComment: String
+  thoughtLeadershipComment: String
+  leadershipComment: String
+  presenceComment: String
+  strengths: [String!]
+  weaknesses: [String!]
+  id: ID!
+  sahabinessRating: Evaluation
+  problemSolvingRating: Evaluation
+  executionRating: Evaluation
+  thoughtLeadershipRating: Evaluation
+  leadershipRating: Evaluation
+  presenceRating: Evaluation
+  state: State!
+  isSelfReview: Boolean!
+}
+
+enum Phase {
+  SELF_REVIEW
+  PEER_REVIEW
+  MANAGER_REVIEW
+  RESULTS
+  IDLE
+}
+
+type ProjectCommentNode implements Node {
+  projectReview: ProjectReviewNode!
+  text: String
+  id: ID!
+  rating: Evaluation
+}
+
+type ProjectNode implements Node {
+  name: String!
+  id: ID!
+}
+
+type ProjectReviewNode implements Node {
+  project: ProjectNode!
+  reviewee: UserNode!
+  text: String
+  id: ID!
+  rating: Evaluation
+  reviewers: [UserNode!]!
+  comment: ProjectCommentNode
+  comments: [ProjectCommentNode!]!
+  managerComment: ManagerProjectCommentNode
+}
+
+type Query {
+  viewer: ViewerNode!
+}
+
+input SaveManagerPersonReviewMutationInput {
+  revieweeId: ID!
+  sahabinessRating: Evaluation
+  problemSolvingRating: Evaluation
+  executionRating: Evaluation
+  thoughtLeadershipRating: Evaluation
+  leadershipRating: Evaluation
+  presenceRating: Evaluation
+  overallRating: Evaluation
+  clientMutationId: String
+}
+
+type SaveManagerPersonReviewMutationPayload {
+  viewer: ViewerNode!
+  managerPersonReview: ManagerPersonReviewNode
+  clientMutationId: String
+}
+
+input SaveManagerProjectCommentMutationInput {
+  projectReviewId: ID!
+  rating: Evaluation
+  clientMutationId: String
+}
+
+type SaveManagerProjectCommentMutationPayload {
+  viewer: ViewerNode!
+  managerProjectComment: ManagerProjectCommentNode
+  clientMutationId: String
+}
+
+input SavePersonReviewMutationInput {
+  revieweeId: ID!
+  sahabinessRating: Evaluation
+  sahabinessComment: String
+  problemSolvingRating: Evaluation
+  problemSolvingComment: String
+  executionRating: Evaluation
+  executionComment: String
+  thoughtLeadershipRating: Evaluation
+  thoughtLeadershipComment: String
+  leadershipRating: Evaluation
+  leadershipComment: String
+  presenceRating: Evaluation
+  presenceComment: String
+  strengths: [String!]
+  weaknesses: [String!]
+  state: State
+  clientMutationId: String
+}
+
+type SavePersonReviewMutationPayload {
+  viewer: ViewerNode!
+  personReview: PersonReviewNode
+  clientMutationId: String
+}
+
+input SaveProjectCommentMutationInput {
+  projectReviewId: ID!
+  text: String
+  rating: Evaluation
+  clientMutationId: String
+}
+
+type SaveProjectCommentMutationPayload {
+  viewer: ViewerNode!
+  projectComment: ProjectCommentNode
+  clientMutationId: String
+}
+
+input SaveProjectReviewMutationInput {
+  projectId: ID!
+  text: String
+  rating: Evaluation
+  reviewersId: [ID!]
+  clientMutationId: String
+}
+
+type SaveProjectReviewMutationPayload {
+  viewer: ViewerNode!
+  projectReview: ProjectReviewNode
+  clientMutationId: String
+}
+
+type SettingsNode implements Node {
+  dueDate: DateTime
+  idlePageUrl: String
+  loginBackgroundImage: String
+  id: ID!
+  phase: Phase!
+}
+
+input StartReviewMutationInput {
+  clientMutationId: String
+}
+
+type StartReviewMutationPayload {
+  viewer: ViewerNode!
+  ok: Boolean!
+  clientMutationId: String
+}
+
+enum State {
+  TODO
+  DOING
+  DONE
+}
+
+type UserNode implements Node {
+  username: String!
+  firstName: String!
+  lastName: String!
+  avatarUrl: String
+  id: ID!
+  hasStarted: Boolean
+  isManager: Boolean!
+  personReview: PersonReviewNode
+  personReviews: [PersonReviewNode!]!
+  projectReviews: [ProjectReviewNode!]!
+  managerPersonReview: ManagerPersonReviewNode
+}
+
+type ViewerNode implements Node {
+  id: ID!
+  users: [UserNode!]!
+  user(id: ID!): UserNode
+  me: UserNode
+  managerProjectComment(id: ID!): ManagerProjectCommentNode
+  managerProjectComments: [ManagerProjectCommentNode!]!
+  managerPersonReview(id: ID!): ManagerPersonReviewNode
+  managerPersonReviews: [ManagerPersonReviewNode!]!
+  findManagerPersonReview(revieweeId: ID): ManagerPersonReviewNode
+  projectComment(id: ID!): ProjectCommentNode
+  projectComments: [ProjectCommentNode!]!
+  projectReview(id: ID!): ProjectReviewNode
+  projectReviews(revieweeId: ID): [ProjectReviewNode!]!
+  usersToReview: [UserNode!]!
+  settings: SettingsNode!
+  personReview(id: ID!): PersonReviewNode
+  personReviews: [PersonReviewNode!]!
+  findPersonReview(revieweeId: ID): PersonReviewNode
+  project(id: ID!): ProjectNode
+  projects: [ProjectNode!]!
+  node(id: ID!): Node
+}
