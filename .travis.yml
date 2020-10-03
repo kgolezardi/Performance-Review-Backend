@@ -4,6 +4,10 @@ install:
     - poetry config virtualenvs.create false
     - (cd review && poetry install -n --no-dev)
 script:
+    - (cd review && cp sample.env .env && python manage.py graphql_schema --out schema.graphql)
+    - ls review
+    - git status
+    - git diff --exit-code --name-only
     - (cd review && cp sample.env .env && python manage.py collectstatic)
 deploy:
   - provider: script
