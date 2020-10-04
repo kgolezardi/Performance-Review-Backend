@@ -5,6 +5,8 @@ import core.schema.person_review_query
 import core.schema.setting_query
 import core.schema.project_review_query
 import core.schema.project_comment_query
+import core.schema.manager_person_review_query
+import core.schema.manager_project_comment_query
 
 
 class Query(
@@ -13,6 +15,8 @@ class Query(
     core.schema.setting_query.SettingQuery,
     core.schema.project_review_query.ProjectReviewQuery,
     core.schema.project_comment_query.ProjectCommentQuery,
+    core.schema.manager_person_review_query.ManagerPersonReviewQuery,
+    core.schema.manager_project_comment_query.ManagerProjectCommentQuery,
     graphene.ObjectType
 ):
     pass
