@@ -11,6 +11,7 @@ from core.interactors.settings import is_at_phase
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
+from .base_review import BaseReview
 from ..models import ProjectReview
 
 
@@ -22,7 +23,7 @@ class ProjectReviewNode(DjangoObjectType):
             'project',
             'text',
         ]
-        interfaces = (relay.Node,)
+        interfaces = (relay.Node, BaseReview,)
 
     rating = Evaluation()
     reviewers = graphene.List(graphene.NonNull(UserNode), required=True)

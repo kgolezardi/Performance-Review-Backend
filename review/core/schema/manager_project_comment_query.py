@@ -6,6 +6,7 @@ from core.interactors.manager_project_comment import get_all_manager_project_com
     get_or_create_manager_project_comment
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
+from .base_project_comment import BaseProjectComment
 from .project_review_query import ProjectReviewNode
 from ..models import ManagerProjectComment
 
@@ -16,7 +17,7 @@ class ManagerProjectCommentNode(DjangoObjectType):
         fields = [
             'project_review',
         ]
-        interfaces = (relay.Node,)
+        interfaces = (relay.Node, BaseProjectComment,)
 
     rating = Evaluation()
 

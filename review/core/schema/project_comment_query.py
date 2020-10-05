@@ -7,6 +7,7 @@ from core.interactors.project_comment import get_all_project_comments, get_proje
     get_or_create_project_comment
 from core.schema.enums import Evaluation, Phase
 from graphql_api.schema.extension import Extension
+from .base_project_comment import BaseProjectComment
 from .project_review_query import ProjectReviewNode
 from ..interactors.settings import is_at_phase
 from ..models import ProjectComment
@@ -19,7 +20,7 @@ class ProjectCommentNode(DjangoObjectType):
             'text',
             'project_review',
         ]
-        interfaces = (relay.Node,)
+        interfaces = (relay.Node, BaseProjectComment,)
 
     reviewer = graphene.Field(UserNode)
     rating = Evaluation()

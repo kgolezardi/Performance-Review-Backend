@@ -9,6 +9,7 @@ from core.interactors.person_review import get_or_create_person_review, get_all_
 from core.schema.enums import Evaluation, State, Phase
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
+from .base_review import BaseReview
 from ..interactors.settings import is_at_phase
 from ..models import PersonReview
 
@@ -27,7 +28,7 @@ class PersonReviewNode(DjangoObjectType):
             'strengths',
             'weaknesses',
         ]
-        interfaces = (relay.Node,)
+        interfaces = (relay.Node, BaseReview,)
 
     sahabiness_rating = Evaluation()
     problem_solving_rating = Evaluation()

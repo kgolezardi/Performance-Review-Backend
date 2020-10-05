@@ -9,6 +9,7 @@ from core.interactors.manager_person_review import get_or_create_manager_person_
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
+from .base_review import BaseReview
 from ..models import ManagerPersonReview
 
 
@@ -18,7 +19,7 @@ class ManagerPersonReviewNode(DjangoObjectType):
         fields = [
             'reviewee',
         ]
-        interfaces = (relay.Node,)
+        interfaces = (relay.Node, BaseReview,)
 
     sahabiness_rating = Evaluation()
     problem_solving_rating = Evaluation()
