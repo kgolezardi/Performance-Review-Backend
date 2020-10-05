@@ -6,9 +6,10 @@ from accounts.models import User
 from accounts.schema.user_query import UserNode
 from core.interactors.person_review import get_or_create_person_review, get_all_person_reviews, get_person_review, \
     get_user_person_reviews
-from core.schema.enums import Evaluation, State
+from core.schema.enums import Evaluation, State, Phase
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
+from ..interactors.settings import is_at_phase
 from ..models import PersonReview
 
 
@@ -36,7 +37,16 @@ class PersonReviewNode(DjangoObjectType):
     presence_rating = Evaluation()
     state = graphene.Field(State, required=True)
 
+    reviewer = graphene.Field(UserNode)
     is_self_review = graphene.NonNull(graphene.Boolean)
+
+    def resolve_reviewer(self, info):
+        if not is_at_phase(Phase.MANAGER_REVIEW):
+            return None
+        user = info.context.user
+        if not user == self.reviewee.manager:
+            return None
+        return self.reviewer
 
     def resolve_is_self_review(self, info):
         return self.is_self_review()
