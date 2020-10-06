@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings
+from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings, ManagerPersonReview, \
+    ManagerProjectComment
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
@@ -30,8 +31,28 @@ class PersonReviewAdmin(admin.ModelAdmin):
     list_display = ('reviewer', 'reviewee')
 
 
+class ManagerProjectCommentAdmin(admin.ModelAdmin):
+    list_display = ('get_project', 'manager', 'get_reviewee')
+
+    def get_project(self, obj):
+        return obj.project_review.project
+
+    get_project.short_description = 'Project'
+
+    def get_reviewee(self, obj):
+        return obj.project_review.reviewee
+
+    get_reviewee.short_description = 'Reviewee'
+
+
+class ManagerPersonReviewAdmin(admin.ModelAdmin):
+    list_display = ('manager', 'reviewee')
+
+
 admin.site.register(Project)
 admin.site.register(ProjectReview, ProjectReviewAdmin)
 admin.site.register(ProjectComment, ProjectCommentAdmin)
 admin.site.register(PersonReview, PersonReviewAdmin)
+admin.site.register(ManagerPersonReview, ManagerPersonReviewAdmin)
+admin.site.register(ManagerProjectComment, ManagerProjectCommentAdmin)
 admin.site.register(Settings)
