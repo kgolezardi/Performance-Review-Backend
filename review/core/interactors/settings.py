@@ -6,4 +6,4 @@ def get_settings():
 
 
 def is_at_phase(phase):
-    return get_settings().phase == phase.value
+    return get_settings().active_round.phase == phase.value

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings
+from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings, Round
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
@@ -30,8 +30,13 @@ class PersonReviewAdmin(admin.ModelAdmin):
     list_display = ('reviewer', 'reviewee')
 
 
+class RoundAdmin(admin.ModelAdmin):
+    list_display = ('title', 'phase')
+
+
 admin.site.register(Project)
 admin.site.register(ProjectReview, ProjectReviewAdmin)
 admin.site.register(ProjectComment, ProjectCommentAdmin)
 admin.site.register(PersonReview, PersonReviewAdmin)
 admin.site.register(Settings)
+admin.site.register(Round, RoundAdmin)

@@ -94,9 +94,39 @@ class ManagerPersonReview(models.Model):
         ordering = ['created_at']
 
 
-class Settings(models.Model):
+class Round(models.Model):
+    title = models.CharField(max_length=512, null=False, blank=True)
     phase = models.IntegerField(choices=Phase.choices(), null=False, blank=False)
-    due_date = models.DateTimeField(null=True)
+    participants = models.ManyToManyField(User)
+    projects = models.ManyToManyField(Project)
+    start_text_self_review = models.TextField(blank=True, null=True)
+    start_text_peer_review = models.TextField(blank=True, null=True)
+    start_text_manager_review = models.TextField(blank=True, null=True)
+    start_text_results = models.TextField(blank=True, null=True)
+    start_text_idle = models.TextField(blank=True, null=True)
+
+    def is_at_phase(self, phase):
+        return self.phase == phase.value
+
+    @property
+    def start_text(self):
+        if self.is_at_phase(Phase.SELF_REVIEW):
+            return self.start_text_self_review
+        if self.is_at_phase(Phase.PEER_REVIEW):
+            return self.start_text_peer_review
+        if self.is_at_phase(Phase.MANAGER_REVIEW):
+            return self.start_text_manager_review
+        if self.is_at_phase(Phase.RESULTS):
+            return self.start_text_results
+        if self.is_at_phase(Phase.IDLE):
+            return self.start_text_idle
+
+    def __str__(self):
+        return self.title
+
+
+class Settings(models.Model):
+    active_round = models.ForeignKey(Round, on_delete=models.PROTECT)
     idle_page_url = models.CharField(max_length=512, null=True, blank=True)
     login_background_image = models.CharField(max_length=512, null=True, blank=True)
 
@@ -112,4 +142,5 @@ class Settings(models.Model):
         try:
             return cls.objects.get()
         except cls.DoesNotExist:
-            return cls.objects.get_or_create(phase=Phase.SELF_REVIEW.value)
+            # Admin should create settings with the desired round
+            raise cls.DoesNotExist

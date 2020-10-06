@@ -15,8 +15,6 @@ type ChangePasswordMutationPayload {
   clientMutationId: String
 }
 
-scalar DateTime
-
 input DeleteProjectReviewMutationInput {
   projectReviewId: ID!
   clientMutationId: String
@@ -234,11 +232,11 @@ type SaveProjectReviewMutationPayload {
 }
 
 type SettingsNode implements Node {
-  dueDate: DateTime
   idlePageUrl: String
   loginBackgroundImage: String
   id: ID!
   phase: Phase!
+  startText: String
 }
 
 input StartReviewMutationInput {
