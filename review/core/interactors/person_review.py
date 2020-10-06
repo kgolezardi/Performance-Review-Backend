@@ -1,22 +1,7 @@
 from core.enums import Phase, State
-from core.interactors.settings import is_at_phase
-from core.models import PersonReview, ProjectReview, MAX_TEXT_LENGTH
-
-
-def can_review_person(user, reviewee):
-    if not user.is_authenticated:
-        return False
-
-    if is_at_phase(Phase.SELF_REVIEW):
-        if user == reviewee:
-            return True
-        return False
-
-    if is_at_phase(Phase.PEER_REVIEW):
-        if ProjectReview.objects.filter(reviewee=reviewee, reviewers=user).exists():
-            return True
-        return False
-    return False
+from core.interactors.authorization import can_review_person
+from core.interactors.settings import is_at_phase, get_active_round
+from core.models import PersonReview, MAX_TEXT_LENGTH
 
 
 def save_person_review(reviewee, reviewer, **kwargs):
@@ -57,13 +42,13 @@ def get_all_person_reviews(user):
     if not user.is_authenticated:
         return PersonReview.objects.none()
     if is_at_phase(Phase.SELF_REVIEW):
-        return PersonReview.objects.filter(reviewer=user, reviewee=user)
+        return PersonReview.objects.filter(round=get_active_round(), reviewer=user, reviewee=user)
     if is_at_phase(Phase.PEER_REVIEW):
-        return PersonReview.objects.filter(reviewer=user).exclude(reviewee=user)
+        return PersonReview.objects.filter(round=get_active_round(), reviewer=user).exclude(reviewee=user)
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return PersonReview.objects.filter(reviewee__manager=user)
+        return PersonReview.objects.filter(round=get_active_round(), reviewee__manager=user)
     if is_at_phase(Phase.RESULTS):
-        return PersonReview.objects.filter(reviewee=user)
+        return PersonReview.objects.filter(round=get_active_round(), reviewee=user)
     return PersonReview.objects.none()
 
 
@@ -75,7 +60,11 @@ def get_or_create_person_review(*, reviewee, reviewer):
     if not can_review_person(reviewer, reviewee):
         return None
 
-    person_review, created = PersonReview.objects.get_or_create(reviewee=reviewee, reviewer=reviewer)
+    person_review, created = PersonReview.objects.get_or_create(
+        round=get_active_round(),
+        reviewee=reviewee,
+        reviewer=reviewer
+    )
     return person_review
 
 

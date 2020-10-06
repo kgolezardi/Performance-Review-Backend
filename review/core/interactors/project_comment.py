@@ -1,13 +1,8 @@
 from core.enums import Phase
+from core.interactors.authorization import can_comment_on_project_review
 from core.interactors.person_review import save_person_review
-from core.interactors.settings import is_at_phase
+from core.interactors.settings import is_at_phase, get_active_round
 from core.models import ProjectComment, MAX_TEXT_LENGTH
-
-
-def can_review_project(user, project_review):
-    if is_at_phase(Phase.PEER_REVIEW):
-        return user in project_review.reviewers.all()
-    return False
 
 
 def save_project_comment(project_review, reviewer, **kwargs):
@@ -34,11 +29,19 @@ def get_all_project_comments(user):
     if not user.is_authenticated:
         return ProjectComment.objects.none()
     if is_at_phase(Phase.PEER_REVIEW):
-        return ProjectComment.objects.filter(reviewer=user)
+        return ProjectComment.objects.filter(
+            project_review__round=get_active_round(),
+            reviewer=user)
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return ProjectComment.objects.filter(project_review__reviewee__manager=user)
+        return ProjectComment.objects.filter(
+            project_review__round=get_active_round(),
+            project_review__reviewee__manager=user
+        )
     if is_at_phase(Phase.RESULTS):
-        return ProjectComment.objects.filter(project_review__reviewee=user)
+        return ProjectComment.objects.filter(
+            project_review__round=get_active_round(),
+            project_review__reviewee=user
+        )
     return ProjectComment.objects.none()
 
 
@@ -54,15 +57,18 @@ def get_project_comment(user, id):
 
 
 def get_or_create_project_comment(project_review, reviewer):
-    if not can_review_project(reviewer, project_review):
+    if not can_comment_on_project_review(reviewer, project_review):
         return None
-    project_comment, created = ProjectComment.objects.get_or_create(project_review=project_review, reviewer=reviewer)
+    project_comment, created = ProjectComment.objects.get_or_create(
+        project_review=project_review,
+        reviewer=reviewer
+    )
     return project_comment
 
 
 def get_project_comment_reviewer(user, project_comment):
     if not is_at_phase(Phase.MANAGER_REVIEW):
         return None
-    if not user == project_comment.project_review.reviewee.manager:
+    if user != project_comment.project_review.reviewee.manager:
         return None
     return project_comment.reviewer

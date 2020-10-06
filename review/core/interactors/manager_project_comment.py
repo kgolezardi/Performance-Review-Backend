@@ -1,5 +1,5 @@
 from core.enums import Phase
-from core.interactors.manager_review import can_manager_review
+from core.interactors.authorization import can_manager_comment_on_project_review
 from core.interactors.settings import is_at_phase
 from core.models import ManagerProjectComment
 
@@ -27,9 +27,12 @@ def get_all_manager_project_comments(user):
 
 
 def get_or_create_manager_project_comment(project_review, manager):
-    if not can_manager_review(manager, project_review.reviewee):
+    if not can_manager_comment_on_project_review(manager, project_review):
         return None
-    project_comment, _ = ManagerProjectComment.objects.get_or_create(project_review=project_review, manager=manager)
+    project_comment, _ = ManagerProjectComment.objects.get_or_create(
+        project_review=project_review,
+        manager=manager
+    )
     return project_comment
 
 

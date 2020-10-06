@@ -1,6 +1,6 @@
 from core.enums import Phase
-from core.interactors.manager_review import can_manager_review
-from core.interactors.settings import is_at_phase
+from core.interactors.authorization import can_manager_review_person
+from core.interactors.settings import is_at_phase, get_active_round
 from core.models import ManagerPersonReview
 
 
@@ -25,14 +25,18 @@ def get_all_manager_person_reviews(user):
     if not user.is_authenticated:
         return ManagerPersonReview.objects.none()
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return ManagerPersonReview.objects.filter(manager=user)
+        return ManagerPersonReview.objects.filter(round=get_active_round(), manager=user)
     return ManagerPersonReview.objects.none()
 
 
 def get_or_create_manager_person_review(*, reviewee, manager):
-    if not can_manager_review(manager, reviewee):
+    if not can_manager_review_person(manager, reviewee):
         return None
-    manager_person_review, _ = ManagerPersonReview.objects.get_or_create(reviewee=reviewee, manager=manager)
+    manager_person_review, _ = ManagerPersonReview.objects.get_or_create(
+        round=get_active_round(),
+        reviewee=reviewee,
+        manager=manager
+    )
     return manager_person_review
 
 
