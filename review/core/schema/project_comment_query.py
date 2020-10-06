@@ -2,8 +2,9 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
+from accounts.schema.user_query import UserNode
 from core.interactors.project_comment import get_all_project_comments, get_project_comment, get_project_review_comments, \
-    get_or_create_project_comment
+    get_or_create_project_comment, get_project_comment_reviewer
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
 from .project_review_query import ProjectReviewNode
@@ -19,7 +20,12 @@ class ProjectCommentNode(DjangoObjectType):
         ]
         interfaces = (relay.Node,)
 
+    reviewer = graphene.Field(UserNode)
     rating = Evaluation()
+
+    def resolve_reviewer(self, info):
+        user = info.context.user
+        return get_project_comment_reviewer(user, self)
 
     @classmethod
     def get_node(cls, info, id):

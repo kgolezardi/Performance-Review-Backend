@@ -58,3 +58,11 @@ def get_or_create_project_comment(project_review, reviewer):
         return None
     project_comment, created = ProjectComment.objects.get_or_create(project_review=project_review, reviewer=reviewer)
     return project_comment
+
+
+def get_project_comment_reviewer(user, project_comment):
+    if not is_at_phase(Phase.MANAGER_REVIEW):
+        return None
+    if not user == project_comment.project_review.reviewee.manager:
+        return None
+    return project_comment.reviewer

@@ -84,3 +84,11 @@ def get_person_review(user, id):
         return get_all_person_reviews(user).get(id=id)
     except PersonReview.DoesNotExist:
         return None
+
+
+def get_person_review_reviewer(user, person_review):
+    if not is_at_phase(Phase.MANAGER_REVIEW):
+        return None
+    if not user == person_review.reviewee.manager:
+        return None
+    return person_review.reviewer
