@@ -4,11 +4,10 @@ from graphene_django import DjangoObjectType
 
 from accounts.schema.user_query import UserNode
 from core.interactors.project_comment import get_all_project_comments, get_project_comment, get_project_review_comments, \
-    get_or_create_project_comment
-from core.schema.enums import Evaluation, Phase
+    get_or_create_project_comment, get_project_comment_reviewer
+from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
 from .project_review_query import ProjectReviewNode
-from ..interactors.settings import is_at_phase
 from ..models import ProjectComment
 
 
@@ -25,12 +24,8 @@ class ProjectCommentNode(DjangoObjectType):
     rating = Evaluation()
 
     def resolve_reviewer(self, info):
-        if not is_at_phase(Phase.MANAGER_REVIEW):
-            return None
         user = info.context.user
-        if not user == self.reviewee.manager:
-            return None
-        return self.reviewer
+        return get_project_comment_reviewer(user, self)
 
     @classmethod
     def get_node(cls, info, id):

@@ -90,3 +90,9 @@ def get_users_to_review(user):
     if is_at_phase(Phase.PEER_REVIEW):
         return User.objects.filter(projectreview__reviewers=user).distinct()
     return User.objects.none()
+
+
+def get_project_review_reviewers(project_review):
+    if not is_at_phase(Phase.SELF_REVIEW):
+        return User.objects.none()
+    return project_review.reviewers.all()

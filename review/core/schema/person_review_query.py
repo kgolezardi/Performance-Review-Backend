@@ -5,7 +5,7 @@ from graphene_django import DjangoObjectType
 from accounts.models import User
 from accounts.schema.user_query import UserNode
 from core.interactors.person_review import get_or_create_person_review, get_all_person_reviews, get_person_review, \
-    get_user_person_reviews
+    get_user_person_reviews, get_person_review_reviewer
 from core.schema.enums import Evaluation, State, Phase
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
@@ -41,12 +41,8 @@ class PersonReviewNode(DjangoObjectType):
     is_self_review = graphene.NonNull(graphene.Boolean)
 
     def resolve_reviewer(self, info):
-        if not is_at_phase(Phase.MANAGER_REVIEW):
-            return None
         user = info.context.user
-        if not user == self.reviewee.manager:
-            return None
-        return self.reviewer
+        return get_person_review_reviewer(user, self)
 
     def resolve_is_self_review(self, info):
         return self.is_self_review()

@@ -109,6 +109,7 @@ type PersonReviewNode implements Node {
   leadershipRating: Evaluation
   presenceRating: Evaluation
   state: State!
+  reviewer: UserNode
   isSelfReview: Boolean!
 }
 
@@ -124,6 +125,7 @@ type ProjectCommentNode implements Node {
   projectReview: ProjectReviewNode!
   text: String
   id: ID!
+  reviewer: UserNode
   rating: Evaluation
 }
 
