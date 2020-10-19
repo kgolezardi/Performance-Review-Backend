@@ -1,6 +1,7 @@
 from accounts.models import User
 from core.enums import Phase
-from core.interactors.settings import is_at_phase
+from core.interactors.authorization import can_review_project, can_delete_project_review
+from core.interactors.settings import is_at_phase, get_active_round
 from core.models import ProjectReview, MAX_TEXT_LENGTH
 
 
@@ -35,13 +36,13 @@ def get_all_project_reviews(user):
     if not user.is_authenticated:
         return ProjectReview.objects.none()
     if is_at_phase(Phase.SELF_REVIEW):
-        return ProjectReview.objects.filter(reviewee=user)
+        return ProjectReview.objects.filter(round=get_active_round(), reviewee=user)
     if is_at_phase(Phase.PEER_REVIEW):
-        return ProjectReview.objects.filter(reviewers=user)
+        return ProjectReview.objects.filter(round=get_active_round(), reviewers=user)
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return ProjectReview.objects.filter(reviewee__manager=user)
+        return ProjectReview.objects.filter(round=get_active_round(), reviewee__manager=user)
     if is_at_phase(Phase.RESULTS):
-        return ProjectReview.objects.filter(reviewee=user)
+        return ProjectReview.objects.filter(round=get_active_round(), reviewee=user)
     return ProjectReview.objects.none()
 
 
@@ -50,13 +51,14 @@ def get_user_project_reviews(user, reviewee):
 
 
 def get_or_create_project_review(project, reviewee):
-    if not reviewee.is_authenticated:
+    if not can_review_project(reviewee, project):
         return None
 
-    if not is_at_phase(Phase.SELF_REVIEW):
-        return None
-
-    project_review, created = ProjectReview.objects.get_or_create(project=project, reviewee=reviewee)
+    project_review, created = ProjectReview.objects.get_or_create(
+        round=get_active_round(),
+        project=project,
+        reviewee=reviewee
+    )
     return project_review
 
 
@@ -68,13 +70,7 @@ def get_project_review(user, id):
 
 
 def delete_project_review(user, project_review):
-    if not user.is_authenticated:
-        return None
-
-    if project_review.reviewee != user:
-        return None
-
-    if not is_at_phase(Phase.SELF_REVIEW):
+    if not can_delete_project_review(user, project_review):
         return None
 
     project_review_id = project_review.id
@@ -88,7 +84,10 @@ def get_users_to_review(user):
     if is_at_phase(Phase.MANAGER_REVIEW):
         return User.objects.filter(manager=user)
     if is_at_phase(Phase.PEER_REVIEW):
-        return User.objects.filter(projectreview__reviewers=user).distinct()
+        return User.objects.filter(
+            projectreview__reviewers=user,
+            projectreview__round=get_active_round()
+        ).distinct()
     return User.objects.none()
 
 

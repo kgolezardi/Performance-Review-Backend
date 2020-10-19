@@ -10,10 +10,17 @@ from core.schema.enums import Phase
 class SettingsNode(DjangoObjectType):
     class Meta:
         model = Settings
-        fields = ['due_date', 'login_background_image', 'idle_page_url']
+        fields = ['login_background_image', 'idle_page_url']
         interfaces = (relay.Node,)
 
     phase = Phase(required=True)
+    start_text = graphene.Field(graphene.String)
+
+    def resolve_phase(self, info):
+        return self.active_round.phase
+
+    def resolve_start_text(self, info):
+        return self.active_round.start_text
 
 
 class SettingQuery(ObjectType):

@@ -1,11 +1,11 @@
 from django.contrib import admin
 
 from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings, ManagerPersonReview, \
-    ManagerProjectComment
+    ManagerProjectComment, Round
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
-    list_display = ('project', 'reviewee', 'get_reviewers')
+    list_display = ('round', 'project', 'reviewee', 'get_reviewers')
 
     def get_reviewers(self, obj):
         return ', '.join(obj.reviewers.values_list('username', flat=True))
@@ -14,7 +14,12 @@ class ProjectReviewAdmin(admin.ModelAdmin):
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):
-    list_display = ('get_project', 'reviewer', 'get_reviewee')
+    list_display = ('get_round', 'get_project', 'reviewer', 'get_reviewee')
+
+    def get_round(self, obj):
+        return obj.project_review.round
+
+    get_round.short_description = 'Round'
 
     def get_project(self, obj):
         return obj.project_review.project
@@ -28,11 +33,16 @@ class ProjectCommentAdmin(admin.ModelAdmin):
 
 
 class PersonReviewAdmin(admin.ModelAdmin):
-    list_display = ('reviewer', 'reviewee')
+    list_display = ('round', 'reviewer', 'reviewee')
 
 
 class ManagerProjectCommentAdmin(admin.ModelAdmin):
-    list_display = ('get_project', 'manager', 'get_reviewee')
+    list_display = ('get_round', 'get_project', 'manager', 'get_reviewee')
+
+    def get_round(self, obj):
+        return obj.project_review.round
+
+    get_round.short_description = 'Round'
 
     def get_project(self, obj):
         return obj.project_review.project
@@ -46,7 +56,11 @@ class ManagerProjectCommentAdmin(admin.ModelAdmin):
 
 
 class ManagerPersonReviewAdmin(admin.ModelAdmin):
-    list_display = ('manager', 'reviewee')
+    list_display = ('round', 'manager', 'reviewee')
+
+
+class RoundAdmin(admin.ModelAdmin):
+    list_display = ('title', 'phase')
 
 
 admin.site.register(Project)
@@ -55,4 +69,5 @@ admin.site.register(ProjectComment, ProjectCommentAdmin)
 admin.site.register(PersonReview, PersonReviewAdmin)
 admin.site.register(ManagerPersonReview, ManagerPersonReviewAdmin)
 admin.site.register(ManagerProjectComment, ManagerProjectCommentAdmin)
+admin.site.register(Round, RoundAdmin)
 admin.site.register(Settings)
