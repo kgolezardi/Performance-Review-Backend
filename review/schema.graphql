@@ -79,10 +79,10 @@ type Mutation {
   saveProjectComment(input: SaveProjectCommentMutationInput!): SaveProjectCommentMutationPayload!
   saveManagerPersonReview(input: SaveManagerPersonReviewMutationInput!): SaveManagerPersonReviewMutationPayload!
   saveManagerProjectComment(input: SaveManagerProjectCommentMutationInput!): SaveManagerProjectCommentMutationPayload!
+  startReview(input: StartReviewMutationInput!): StartReviewMutationPayload!
   login(input: LoginMutationInput!): LoginMutationPayload!
   logout(input: LogoutMutationInput!): LogoutMutationPayload!
   changePassword(input: ChangePasswordMutationInput!): ChangePasswordMutationPayload!
-  startReview(input: StartReviewMutationInput!): StartReviewMutationPayload!
 }
 
 interface Node {
@@ -261,12 +261,12 @@ type UserNode implements Node {
   lastName: String!
   avatarUrl: String
   id: ID!
-  hasStarted: Boolean
   isManager: Boolean!
   personReview: PersonReviewNode
   personReviews: [PersonReviewNode!]!
   projectReviews: [ProjectReviewNode!]!
   managerPersonReview: ManagerPersonReviewNode
+  hasStarted: Boolean
 }
 
 type ViewerNode implements Node {

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings, ManagerPersonReview, \
-    ManagerProjectComment, Round
+    ManagerProjectComment, Round, Participation
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
@@ -63,6 +63,11 @@ class RoundAdmin(admin.ModelAdmin):
     list_display = ('title', 'phase')
 
 
+class ParticipationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'round', 'has_started_self_review', 'has_started_peer_review',
+                    'has_started_manager_review', 'has_started_results')
+
+
 admin.site.register(Project)
 admin.site.register(ProjectReview, ProjectReviewAdmin)
 admin.site.register(ProjectComment, ProjectCommentAdmin)
@@ -71,3 +76,4 @@ admin.site.register(ManagerPersonReview, ManagerPersonReviewAdmin)
 admin.site.register(ManagerProjectComment, ManagerProjectCommentAdmin)
 admin.site.register(Round, RoundAdmin)
 admin.site.register(Settings)
+admin.site.register(Participation, ParticipationAdmin)

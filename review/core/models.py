@@ -150,3 +150,12 @@ class Settings(models.Model):
         except cls.DoesNotExist:
             # Admin should create settings with the desired round
             raise cls.DoesNotExist
+
+
+class Participation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    round = models.ForeignKey(Round, on_delete=models.PROTECT)
+    has_started_self_review = models.BooleanField(default=False, null=False, blank=False)
+    has_started_peer_review = models.BooleanField(default=False, null=False, blank=False)
+    has_started_manager_review = models.BooleanField(default=False, null=False, blank=False)
+    has_started_results = models.BooleanField(default=False, null=False, blank=False)

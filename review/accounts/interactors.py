@@ -29,14 +29,6 @@ def get_user(user, id):
     return get_all_users(user).get(id=id)
 
 
-def start_review(user):
-    if user.is_authenticated:
-        user.has_started = True
-        user.save()
-        return True
-    return False
-
-
 def add_user(username, password, first_name, last_name, email, employee_id, manager=None):
     user = User(username=username,
                 first_name=first_name,

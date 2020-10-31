@@ -6,6 +6,7 @@ from core.schema.save_manager_project_comment_mutation import SaveManagerProject
 from core.schema.save_person_review_mutation import SavePersonReviewMutation
 from core.schema.save_project_comment_mutation import SaveProjectCommentMutation
 from core.schema.save_project_review_mutation import SaveProjectReviewMutation
+from core.schema.start_review_mutation import StartReviewMutation
 
 
 class Mutation(
@@ -17,3 +18,4 @@ class Mutation(
     save_project_comment = SaveProjectCommentMutation.Field(required=True)
     save_manager_person_review = SaveManagerPersonReviewMutation.Field(required=True)
     save_manager_project_comment = SaveManagerProjectCommentMutation.Field(required=True)
+    start_review = StartReviewMutation.Field(required=True)
