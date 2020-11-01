@@ -12,13 +12,7 @@ class UserNode(DjangoObjectType):
         fields = ['username', 'first_name', 'last_name', 'avatar_url']
         interfaces = (relay.Node,)
 
-    has_started = graphene.Boolean(required=False)
     is_manager = graphene.Boolean(required=True)
-
-    def resolve_has_started(self, info):
-        if info.context.user == self:
-            return self.has_started
-        return None
 
     def resolve_is_manager(self, info):
         return is_manager(self)

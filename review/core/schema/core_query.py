@@ -7,6 +7,7 @@ import core.schema.project_review_query
 import core.schema.project_comment_query
 import core.schema.manager_person_review_query
 import core.schema.manager_project_comment_query
+import core.schema.participation_query
 
 
 class Query(

@@ -1,7 +1,7 @@
 import graphene
 from graphene import ClientIDMutation
 
-from accounts.interactors import start_review
+from core.interactors.participation import start_review
 from graphql_api.schema.with_viewer import WithViewer
 
 
