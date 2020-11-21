@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path
 
-from accounts.interactors import add_user, get_user_progress
+from accounts.interactors import add_user, get_user_progress, set_user_manager
 from core.enums import Phase
 from core.interactors.project_review import get_users_to_review
 from core.interactors.settings import is_at_phase
@@ -22,32 +22,44 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     model = User
     list_display = ('username', 'get_name', 'get_progess', 'manager', 'get_users_to_review')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
-        ('Review data', {'fields': ('manager', 'avatar_url')}),
+        ('Review data', {'fields': ('employee_id', 'manager', 'avatar_url')}),
     )
     change_list_template = 'accounts/change_list_with_import.html'
 
     def get_urls(self):
-        my_urls = [path('import-users', self.admin_site.admin_view(self.add_users))]
+        my_urls = [path('import-users', self.admin_site.admin_view(self.import_users))]
         return my_urls + super().get_urls()
 
-    def add_users(self, request):
+    def import_users(self, request):
         if request.method == "POST":
             csv_content = StringIO(request.FILES["csv_file"].read().decode('utf-8'))
             reader = csv.DictReader(csv_content, delimiter=',')
-            successful, unsuccessful = 0, 0
+            users_managers = []
+            created, updated, unsuccessful = 0, 0, 0
+
             for row in reader:
-                success = False
+                status = -1
                 if CsvRowValidationForm(row).is_valid():
                     username = row['email'].split('@')[0]
-                    success = add_user(username=username, **row)
-                if success:
-                    successful += 1
+                    manager_username = row.pop('manager_username', None)
+                    status = add_user(username=username, **row)
+                    if manager_username:
+                        users_managers.append((username, manager_username))
+                if status == 0:
+                    updated += 1
+                elif status == 1:
+                    created += 1
                 else:
                     unsuccessful += 1
 
+            for username, manager_username in users_managers:
+                success = set_user_manager(username, manager_username)
+                if not success:
+                    unsuccessful += 1
+
             level = messages.SUCCESS if unsuccessful == 0 else messages.WARNING
-            self.message_user(request, "Added %d users successfully, and %d row(s) had error."
-                              % (successful, unsuccessful), level)
+            self.message_user(request, "%d users were created, %d users got updated, and %d row(s) had error."
+                              % (created, updated, unsuccessful), level)
             return redirect('.')
 
         form = CsvImportForm()

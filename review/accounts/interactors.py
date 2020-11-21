@@ -29,20 +29,39 @@ def get_user(user, id):
     return get_all_users(user).get(id=id)
 
 
-def add_user(username, password, first_name, last_name, email, employee_id, manager=None):
+def get_user_by_username(username):
+    try:
+        return User.objects.get(username=username)
+    except User.DoesNotExist:
+        return None
+
+
+def add_user(username, password, first_name, last_name, email, employee_id):
+    user = get_user_by_username(username)
+    if user is not None:
+        return 0
     user = User(username=username,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
-                employee_id=employee_id,
-                manager=manager)
+                employee_id=employee_id)
     user.set_password(password)
 
     try:
         user.save()
-        return True
+        return 1
     except IntegrityError:
+        return -1
+
+
+def set_user_manager(username, manager_username):
+    user = get_user_by_username(username)
+    manager = get_user_by_username(manager_username)
+    if user is None or manager is None:
         return False
+    user.manager = manager
+    user.save()
+    return True
 
 
 def get_person_review_progress(person_review):
