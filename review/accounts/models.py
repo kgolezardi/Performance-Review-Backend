@@ -11,4 +11,4 @@ class User(AbstractUser):
         ordering = ['first_name', 'last_name']
 
     def __str__(self):
-        return self.username
+        return '%s (%s %s)' % (self.username, self.first_name, self.last_name)
