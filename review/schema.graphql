@@ -148,6 +148,14 @@ type Query {
   viewer: ViewerNode!
 }
 
+type RoundNode implements Node {
+  title: String!
+  id: ID!
+  phase: Phase!
+  projects: [ProjectNode!]!
+  participants: [UserNode!]!
+}
+
 input SaveManagerPersonReviewMutationInput {
   revieweeId: ID!
   sahabinessRating: Evaluation
@@ -274,6 +282,9 @@ type ViewerNode implements Node {
   users: [UserNode!]!
   user(id: ID!): UserNode
   me: UserNode
+  round(id: ID!): RoundNode
+  activeRound: RoundNode
+  rounds: [RoundNode!]!
   managerProjectComment(id: ID!): ManagerProjectCommentNode
   managerProjectComments: [ManagerProjectCommentNode!]!
   managerPersonReview(id: ID!): ManagerPersonReviewNode
