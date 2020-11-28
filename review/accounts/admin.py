@@ -20,7 +20,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('username', 'get_name', 'get_progess', 'manager', 'get_users_to_review')
+    list_display = ('username', 'get_name', 'get_progess', 'manager')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
         ('Review data', {'fields': ('employee_id', 'manager', 'avatar_url')}),
     )
@@ -77,8 +77,10 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     get_name.short_description = 'Name'
 
     def get_progess(self, obj):
+        progress = get_user_progress(obj)
+        if progress is None:
+            return ''
         if is_at_phase(Phase.SELF_REVIEW):
-            progress = get_user_progress(obj)
             res = 'Criteria: %d%% - SW: %d%% - P: %s' % (progress['performance_competencies'],
                                                          progress['dominant_characteristics'],
                                                          list(map(int, progress['projects'])))
@@ -87,6 +89,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
 
     get_progess.short_description = 'Progress'
 
+    # TODO: show this as a part of the progress in peer review
     def get_users_to_review(self, obj):
         return ', '.join(get_users_to_review(obj).values_list('username', flat=True))
 
