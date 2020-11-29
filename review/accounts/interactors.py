@@ -2,6 +2,9 @@ from django.db import IntegrityError
 
 from accounts.models import User
 from core.enums import Phase
+from core.interactors.authorization import can_participate
+from core.interactors.person_review import get_all_person_reviews
+from core.interactors.project_review import get_all_project_reviews
 from core.interactors.settings import is_at_phase
 from core.models import PersonReview, ProjectReview
 
@@ -89,10 +92,11 @@ def get_project_review_progress(project_review):
 
 
 def get_user_progress(user):
+    if not can_participate(user):
+        return None
     if is_at_phase(Phase.SELF_REVIEW):
-        person_reviews = PersonReview.objects.filter(reviewee=user, reviewer=user)
-        project_reviews = ProjectReview.objects.filter(reviewee=user)
-
+        person_reviews = get_all_person_reviews(user)
+        project_reviews = get_all_project_reviews(user)
         res = {'performance_competencies': 0,
                'dominant_characteristics': 0}
         if len(person_reviews) > 0:
@@ -104,7 +108,7 @@ def get_user_progress(user):
         res['projects'] = project_reviews_progress
 
         return res
-    return {}
+    return None
 
 
 def is_manager(user):
