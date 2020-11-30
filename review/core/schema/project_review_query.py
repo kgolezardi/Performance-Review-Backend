@@ -5,10 +5,12 @@ from graphene_django import DjangoObjectType
 from accounts.models import User
 from accounts.schema.user_query import UserNode
 from core.interactors.project_review import get_all_project_reviews, get_project_review, get_users_to_review, \
-    get_user_project_reviews, get_project_review_reviewers
+    get_user_project_reviews, get_project_review_reviewers, get_project_review_rating
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
+from ..enums import Phase
+from ..interactors.settings import is_at_phase
 from ..models import ProjectReview
 
 
@@ -24,6 +26,9 @@ class ProjectReviewNode(DjangoObjectType):
 
     rating = Evaluation()
     reviewers = graphene.List(graphene.NonNull(UserNode), required=True)
+
+    def resolve_rating(self, info):
+        return get_project_review_rating(self)
 
     def resolve_reviewers(self, info):
         return get_project_review_reviewers(self)
