@@ -9,7 +9,6 @@ from django.urls import path
 
 from accounts.interactors import add_user, get_user_progress, set_user_manager
 from core.enums import Phase
-from core.interactors.project_review import get_users_to_review
 from core.interactors.settings import is_at_phase
 from .forms import UserCreationForm, UserChangeForm, CsvRowValidationForm, CsvImportForm
 from .models import User
@@ -20,7 +19,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('username', 'get_name', 'get_progess', 'manager')
+    list_display = ('username', 'name', 'get_progess', 'manager')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
         ('Review data', {'fields': ('employee_id', 'manager', 'avatar_url')}),
     )
@@ -71,11 +70,6 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
         }
         return TemplateResponse(request, 'accounts/import_users.html', context)
 
-    def get_name(self, obj):
-        return obj.first_name + ' ' + obj.last_name
-
-    get_name.short_description = 'Name'
-
     def get_progess(self, obj):
         progress = get_user_progress(obj)
         if progress is None:
@@ -85,12 +79,9 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
                                                          progress['dominant_characteristics'],
                                                          list(map(int, progress['projects'])))
             return res
+        if is_at_phase(Phase.PEER_REVIEW):
+            res = ['%s: %s' % (peer.name, state.name) for peer, state in progress]
+            return ', '.join(res)
         return ''
 
     get_progess.short_description = 'Progress'
-
-    # TODO: show this as a part of the progress in peer review
-    def get_users_to_review(self, obj):
-        return ', '.join(get_users_to_review(obj).values_list('username', flat=True))
-
-    get_users_to_review.short_description = 'Users to review'
