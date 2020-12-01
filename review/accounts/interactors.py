@@ -1,12 +1,12 @@
 from django.db import IntegrityError
 
 from accounts.models import User
-from core.enums import Phase
+from core.enums import Phase, State
 from core.interactors.authorization import can_participate
-from core.interactors.person_review import get_all_person_reviews
-from core.interactors.project_review import get_all_project_reviews
+from core.interactors.person_review import get_all_person_reviews, get_user_person_reviews
+from core.interactors.project_review import get_all_project_reviews, get_users_to_review
 from core.interactors.settings import is_at_phase
-from core.models import PersonReview, ProjectReview
+from core.models import PersonReview
 
 
 def change_password(user, old_password, new_password):
@@ -107,6 +107,15 @@ def get_user_progress(user):
             project_reviews_progress.append(get_project_review_progress(project_review))
         res['projects'] = project_reviews_progress
 
+        return res
+    if is_at_phase(Phase.PEER_REVIEW):
+        res = []
+        for peer in get_users_to_review(user):
+            person_review_qs = get_user_person_reviews(user=user, reviewee=peer)
+            if not person_review_qs:
+                res.append((peer, State.TODO))
+            else:
+                res.append((peer, State(person_review_qs.get().state)))
         return res
     return None
 
