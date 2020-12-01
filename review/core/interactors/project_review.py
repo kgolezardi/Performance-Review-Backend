@@ -95,3 +95,9 @@ def get_project_review_reviewers(project_review):
     if not is_at_phase(Phase.SELF_REVIEW):
         return User.objects.none()
     return project_review.reviewers.all()
+
+
+def get_project_review_rating(project_review):
+    if not is_at_phase(Phase.PEER_REVIEW):
+        return project_review.rating
+    return None
