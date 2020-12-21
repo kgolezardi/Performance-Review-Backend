@@ -16,3 +16,7 @@ class User(AbstractUser):
     @property
     def name(self):
         return self.first_name + ' ' + self.last_name
+
+    @property
+    def is_manager(self):
+        return User.objects.filter(manager=self).exists()
