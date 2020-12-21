@@ -27,6 +27,7 @@ class Round(models.Model):
     start_text_manager_review = models.TextField(blank=True, null=True)
     start_text_results = models.TextField(blank=True, null=True)
     start_text_idle = models.TextField(blank=True, null=True)
+    manager_overall_review_text = models.TextField(blank=True, null=True)
 
     def is_at_phase(self, phase):
         return self.phase == phase.value

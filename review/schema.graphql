@@ -245,6 +245,7 @@ type SettingsNode implements Node {
   id: ID!
   phase: Phase!
   startText: String
+  managerOverallReviewText: String
 }
 
 input StartReviewMutationInput {
@@ -275,6 +276,8 @@ type UserNode implements Node {
   projectReviews: [ProjectReviewNode!]!
   managerPersonReview: ManagerPersonReviewNode
   hasStarted: Boolean
+  ranking1: String
+  ranking2: String
 }
 
 type ViewerNode implements Node {

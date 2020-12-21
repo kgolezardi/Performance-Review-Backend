@@ -114,3 +114,27 @@ def can_manager_comment_on_project_review(user, project_review):
     if user != project_review.reviewee.manager:
         return False
     return True
+
+
+def can_view_ranking(manager, user):
+    if not user.is_authenticated:
+        return False
+
+    if not is_at_phase(Phase.MANAGER_REVIEW):
+        return False
+
+    if manager != user.manager:
+        return False
+    return True
+
+
+def can_view_manager_overall_review_text(user):
+    if not user.is_authenticated:
+        return False
+
+    if not is_at_phase(Phase.MANAGER_REVIEW):
+        return False
+
+    if not user.is_manager:
+        return False
+    return True
