@@ -118,7 +118,3 @@ def get_user_progress(user):
                 res.append((peer, State(person_review_qs.get().state)))
         return res
     return None
-
-
-def is_manager(user):
-    return User.objects.filter(manager=user).exists()

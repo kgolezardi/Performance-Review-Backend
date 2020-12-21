@@ -2,7 +2,7 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from accounts.interactors import get_all_users, get_user, is_valid_user, is_manager
+from accounts.interactors import get_all_users, get_user, is_valid_user
 from ..models import User
 
 
@@ -15,7 +15,7 @@ class UserNode(DjangoObjectType):
     is_manager = graphene.Boolean(required=True)
 
     def resolve_is_manager(self, info):
-        return is_manager(self)
+        return self.is_manager
 
     @classmethod
     def get_node(cls, info, id):
