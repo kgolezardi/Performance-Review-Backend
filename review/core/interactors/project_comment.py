@@ -1,5 +1,5 @@
 from core.enums import Phase
-from core.interactors.authorization import can_comment_on_project_review
+from core.interactors.authorization import can_comment_on_project_review, can_view_project_comment_reviewer
 from core.interactors.person_review import save_person_review
 from core.interactors.settings import is_at_phase, get_active_round
 from core.models import ProjectComment, MAX_TEXT_LENGTH
@@ -67,8 +67,6 @@ def get_or_create_project_comment(project_review, reviewer):
 
 
 def get_project_comment_reviewer(user, project_comment):
-    if not is_at_phase(Phase.MANAGER_REVIEW):
-        return None
-    if user != project_comment.project_review.reviewee.manager:
+    if not can_view_project_comment_reviewer(user, project_comment):
         return None
     return project_comment.reviewer

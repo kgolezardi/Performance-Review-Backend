@@ -138,3 +138,19 @@ def can_view_manager_overall_review_text(user):
     if not user.is_manager:
         return False
     return True
+
+
+def can_view_person_review_reviewer(user, person_review):
+    if not is_at_phase(Phase.MANAGER_REVIEW):
+        return False
+    if not user == person_review.reviewee.manager:
+        return False
+    return True
+
+
+def can_view_project_comment_reviewer(user, project_comment):
+    if not is_at_phase(Phase.MANAGER_REVIEW):
+        return False
+    if user != project_comment.project_review.reviewee.manager:
+        return False
+    return True
