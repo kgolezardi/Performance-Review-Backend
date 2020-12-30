@@ -22,17 +22,14 @@ def get_all_manager_project_comments(user):
     if not user.is_authenticated:
         return ManagerProjectComment.objects.none()
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return ManagerProjectComment.objects.filter(manager=user)
+        return ManagerProjectComment.objects.filter(project_review__reviewee__manager=user)
     return ManagerProjectComment.objects.none()
 
 
 def get_or_create_manager_project_comment(project_review, manager):
     if not can_manager_comment_on_project_review(manager, project_review):
         return None
-    project_comment, _ = ManagerProjectComment.objects.get_or_create(
-        project_review=project_review,
-        manager=manager
-    )
+    project_comment, _ = ManagerProjectComment.objects.get_or_create(project_review=project_review)
     return project_comment
 
 
