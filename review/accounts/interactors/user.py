@@ -59,3 +59,19 @@ def set_user_manager(username, manager_username):
     user.manager = manager
     user.save()
     return True
+
+
+def is_manager(user):
+    return User.objects.filter(manager=user).exists()
+
+
+def is_manager_or_hr(user):
+    return user.is_hr or is_manager(user)
+
+
+def is_manager_of_user_or_hr(*, manager, user):
+    if manager.is_hr:
+        return True
+    if user.manager == manager:
+        return True
+    return False

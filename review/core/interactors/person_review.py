@@ -1,6 +1,7 @@
 from core.enums import Phase, State
-from core.interactors.authorization import can_review_person
+from core.interactors.authorization import can_review_person, can_view_person_review_reviewer
 from core.interactors.settings import is_at_phase, get_active_round
+from core.interactors.utils import filter_query_set_for_manager_review
 from core.models import PersonReview, MAX_TEXT_LENGTH
 
 
@@ -46,7 +47,8 @@ def get_all_person_reviews(user):
     if is_at_phase(Phase.PEER_REVIEW):
         return PersonReview.objects.filter(round=get_active_round(), reviewer=user).exclude(reviewee=user)
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return PersonReview.objects.filter(round=get_active_round(), reviewee__manager=user)
+        qs = PersonReview.objects.filter(round=get_active_round())
+        return filter_query_set_for_manager_review(user, qs, 'reviewee')
     if is_at_phase(Phase.RESULTS):
         return PersonReview.objects.filter(round=get_active_round(), reviewee=user)
     return PersonReview.objects.none()
@@ -76,8 +78,6 @@ def get_person_review(user, id):
 
 
 def get_person_review_reviewer(user, person_review):
-    if not is_at_phase(Phase.MANAGER_REVIEW):
-        return None
-    if not user == person_review.reviewee.manager:
+    if not can_view_person_review_reviewer(user, person_review):
         return None
     return person_review.reviewer
