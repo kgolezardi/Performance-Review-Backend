@@ -2,20 +2,20 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from accounts.interactors.user import get_all_users, get_user, is_valid_user
+from accounts.interactors.user import get_all_users, get_user, is_valid_user, is_manager
 from ..models import User
 
 
 class UserNode(DjangoObjectType):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'avatar_url']
+        fields = ['username', 'first_name', 'last_name', 'avatar_url', 'is_hr']
         interfaces = (relay.Node,)
 
     is_manager = graphene.Boolean(required=True)
 
     def resolve_is_manager(self, info):
-        return self.is_manager
+        return is_manager(self)
 
     @classmethod
     def get_node(cls, info, id):

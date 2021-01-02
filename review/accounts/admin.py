@@ -22,7 +22,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     model = User
     list_display = ('username', 'name', 'get_progess', 'manager')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
-        ('Review data', {'fields': ('employee_id', 'manager', 'avatar_url', 'ranking1', 'ranking2')}),
+        ('Review data', {'fields': ('employee_id', 'manager', 'avatar_url', 'ranking1', 'ranking2', 'is_hr')}),
     )
     change_list_template = 'accounts/change_list_with_import.html'
 
