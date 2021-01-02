@@ -7,7 +7,8 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path
 
-from accounts.interactors import add_user, get_user_progress, set_user_manager
+from accounts.interactors.admin_progress import get_user_progress
+from accounts.interactors.user import add_user, set_user_manager
 from core.enums import Phase
 from core.interactors.settings import is_at_phase
 from .forms import UserCreationForm, UserChangeForm, CsvRowValidationForm, CsvImportForm

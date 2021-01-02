@@ -1,7 +1,7 @@
 import graphene
 from graphene import ClientIDMutation
 
-from accounts.interactors import change_password
+from accounts.interactors.user import change_password
 from graphql_api.schema.with_viewer import WithViewer
 
 
