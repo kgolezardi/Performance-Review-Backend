@@ -2,7 +2,7 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from accounts.interactors import get_all_users, get_user, is_valid_user
+from accounts.interactors.user import get_all_users, get_user, is_valid_user
 from ..models import User
 
 

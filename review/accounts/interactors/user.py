@@ -1,0 +1,61 @@
+from django.db import IntegrityError
+
+from accounts.models import User
+
+
+def change_password(user, old_password, new_password):
+    # TODO validate password
+    if user.is_authenticated and user.check_password(old_password):
+        user.set_password(new_password)
+        user.save()
+        return True
+    return False
+
+
+def get_all_users(user):
+    if user.is_authenticated:
+        return User.objects.filter(is_staff=False, is_active=True)
+    return User.objects.none()
+
+
+def is_valid_user(user):
+    return user in get_all_users(user)
+
+
+def get_user(user, id):
+    return get_all_users(user).get(id=id)
+
+
+def get_user_by_username(username):
+    try:
+        return User.objects.get(username=username)
+    except User.DoesNotExist:
+        return None
+
+
+def add_user(username, password, first_name, last_name, email, employee_id):
+    user = get_user_by_username(username)
+    if user is not None:
+        return 0
+    user = User(username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                employee_id=employee_id)
+    user.set_password(password)
+
+    try:
+        user.save()
+        return 1
+    except IntegrityError:
+        return -1
+
+
+def set_user_manager(username, manager_username):
+    user = get_user_by_username(username)
+    manager = get_user_by_username(manager_username)
+    if user is None or manager is None:
+        return False
+    user.manager = manager
+    user.save()
+    return True
