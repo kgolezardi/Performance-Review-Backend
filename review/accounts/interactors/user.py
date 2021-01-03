@@ -61,6 +61,16 @@ def set_user_manager(username, manager_username):
     return True
 
 
+def set_user_rankings(username, ranking1, ranking2):
+    user = get_user_by_username(username)
+    if user is None:
+        return False
+    user.ranking1 = ranking1
+    user.ranking2 = ranking2
+    user.save()
+    return True
+
+
 def is_manager(user):
     return User.objects.filter(manager=user).exists()
 
