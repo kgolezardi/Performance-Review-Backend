@@ -9,8 +9,6 @@ from core.interactors.project_review import get_all_project_reviews, get_project
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
-from ..enums import Phase
-from ..interactors.settings import is_at_phase
 from ..models import ProjectReview
 
 

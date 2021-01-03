@@ -75,7 +75,6 @@ class ProjectComment(models.Model):
 
 class ManagerProjectComment(models.Model):
     project_review = models.ForeignKey(ProjectReview, on_delete=models.PROTECT)
-    manager = models.ForeignKey(User, on_delete=models.PROTECT)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -115,7 +114,6 @@ class PersonReview(models.Model):
 class ManagerPersonReview(models.Model):
     round = models.ForeignKey(Round, on_delete=models.PROTECT)
     reviewee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='manager_person_reviews')
-    manager = models.ForeignKey(User, on_delete=models.PROTECT, related_name='authored_manager_person_reviews')
     sahabiness_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     problem_solving_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     execution_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)

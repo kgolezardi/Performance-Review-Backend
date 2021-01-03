@@ -2,6 +2,7 @@ from accounts.models import User
 from core.enums import Phase
 from core.interactors.authorization import can_review_project, can_delete_project_review
 from core.interactors.settings import is_at_phase, get_active_round
+from core.interactors.utils import filter_query_set_for_manager_review
 from core.models import ProjectReview, MAX_TEXT_LENGTH
 
 
@@ -40,7 +41,8 @@ def get_all_project_reviews(user):
     if is_at_phase(Phase.PEER_REVIEW):
         return ProjectReview.objects.filter(round=get_active_round(), reviewers=user)
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return ProjectReview.objects.filter(round=get_active_round(), reviewee__manager=user)
+        qs = ProjectReview.objects.filter(round=get_active_round())
+        return filter_query_set_for_manager_review(user, qs, 'reviewee')
     if is_at_phase(Phase.RESULTS):
         return ProjectReview.objects.filter(round=get_active_round(), reviewee=user)
     return ProjectReview.objects.none()
@@ -82,7 +84,8 @@ def get_users_to_review(user):
     if not user.is_authenticated:
         return User.objects.none()
     if is_at_phase(Phase.MANAGER_REVIEW):
-        return User.objects.filter(manager=user)
+        qs = User.objects.filter(round=get_active_round())
+        return filter_query_set_for_manager_review(user, qs)
     if is_at_phase(Phase.PEER_REVIEW):
         return User.objects.filter(
             projectreview__reviewers=user,

@@ -6,10 +6,9 @@ from accounts.models import User
 from accounts.schema.user_query import UserNode
 from core.interactors.person_review import get_or_create_person_review, get_all_person_reviews, get_person_review, \
     get_user_person_reviews, get_person_review_reviewer
-from core.schema.enums import Evaluation, State, Phase
+from core.schema.enums import Evaluation, State
 from graphql_api.schema.extension import Extension
 from graphql_api.schema.utils import get_node
-from ..interactors.settings import is_at_phase
 from ..models import PersonReview
 
 

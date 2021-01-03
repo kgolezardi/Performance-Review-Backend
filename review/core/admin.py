@@ -37,7 +37,7 @@ class PersonReviewAdmin(admin.ModelAdmin):
 
 
 class ManagerProjectCommentAdmin(admin.ModelAdmin):
-    list_display = ('get_round', 'get_project', 'manager', 'get_reviewee')
+    list_display = ('get_round', 'get_project', 'get_reviewee')
 
     def get_round(self, obj):
         return obj.project_review.round
@@ -56,7 +56,7 @@ class ManagerProjectCommentAdmin(admin.ModelAdmin):
 
 
 class ManagerPersonReviewAdmin(admin.ModelAdmin):
-    list_display = ('round', 'manager', 'reviewee')
+    list_display = ('round', 'reviewee')
 
 
 class RoundAdmin(admin.ModelAdmin):
