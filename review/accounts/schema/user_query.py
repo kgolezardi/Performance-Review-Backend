@@ -9,7 +9,7 @@ from ..models import User
 class UserNode(DjangoObjectType):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'avatar_url', 'is_hr']
+        fields = ['username', 'first_name', 'last_name', 'avatar_url', 'is_hr', 'manager']
         interfaces = (relay.Node,)
 
     is_manager = graphene.Boolean(required=True)
