@@ -27,3 +27,5 @@ class CsvRowValidationForm(forms.Form):
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True)
     manager_username = forms.CharField(required=False)
+    ranking1 = forms.CharField(required=False)
+    ranking2 = forms.CharField(required=False)

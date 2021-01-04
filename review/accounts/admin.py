@@ -8,7 +8,7 @@ from django.template.response import TemplateResponse
 from django.urls import path
 
 from accounts.interactors.admin_progress import get_user_progress
-from accounts.interactors.user import add_user, set_user_manager
+from accounts.interactors.user import add_user, set_user_manager, set_user_rankings
 from core.enums import Phase
 from core.interactors.settings import is_at_phase
 from .forms import UserCreationForm, UserChangeForm, CsvRowValidationForm, CsvImportForm
@@ -35,6 +35,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
             csv_content = StringIO(request.FILES["csv_file"].read().decode('utf-8'))
             reader = csv.DictReader(csv_content, delimiter=',')
             users_managers = []
+            rankings = []
             created, updated, unsuccessful = 0, 0, 0
 
             for row in reader:
@@ -42,9 +43,13 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
                 if CsvRowValidationForm(row).is_valid():
                     username = row['email'].split('@')[0]
                     manager_username = row.pop('manager_username', None)
+                    ranking1 = row.pop('ranking1', None)
+                    ranking2 = row.pop('ranking2', None)
                     status = add_user(username=username, **row)
                     if manager_username:
                         users_managers.append((username, manager_username))
+                    if ranking1 or ranking2:
+                        rankings.append((username, ranking1, ranking2))
                 if status == 0:
                     updated += 1
                 elif status == 1:
@@ -57,8 +62,13 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
                 if not success:
                     unsuccessful += 1
 
+            for username, ranking1, ranking2 in rankings:
+                success = set_user_rankings(username, ranking1, ranking2)
+                if not success:
+                    unsuccessful += 1
+
             level = messages.SUCCESS if unsuccessful == 0 else messages.WARNING
-            self.message_user(request, "%d users were created, %d users got updated, and %d row(s) had error."
+            self.message_user(request, "%d users were created, %d users got updated, and %d errors detected."
                               % (created, updated, unsuccessful), level)
             return redirect('.')
 
