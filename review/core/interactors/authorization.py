@@ -102,7 +102,7 @@ def can_write_manager_person_review(user, reviewee):
     if not can_view_manager_person_review(user, reviewee):
         return False
 
-    if user.manager != user:
+    if reviewee.manager != user:
         return False
     return True
 
@@ -129,7 +129,7 @@ def can_write_manager_project_comment(user, project_review):
     if not can_view_manager_project_comment(user, project_review):
         return False
 
-    if user.manager != user:
+    if project_review.reviewee.manager != user:
         return False
     return True
 
