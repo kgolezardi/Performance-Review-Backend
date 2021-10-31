@@ -131,6 +131,8 @@ class Settings(models.Model):
     active_round = models.ForeignKey(Round, on_delete=models.PROTECT)
     idle_page_url = models.CharField(max_length=512, null=True, blank=True)
     login_background_image = models.CharField(max_length=512, null=True, blank=True)
+    logo_url = models.CharField(max_length=512, null=True, blank=True)
+    light_logo_url = models.CharField(max_length=512, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "settings"

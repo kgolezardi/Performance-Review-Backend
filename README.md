@@ -8,6 +8,7 @@
 - Install dependencies `poetry install`
 - Create `.env` based on the given `sample.env` in root and in `docker/development`
 - Run docker compose file at `docker/development` to create PostgreSQL container `docker-compose up -d`
+- Each time you change the schema of the GraphQL API, you should run `python manage.py graphql_schema --out schema.graphql`
 
 ## Deployment
 

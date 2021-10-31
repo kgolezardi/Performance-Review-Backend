@@ -242,6 +242,8 @@ type SaveProjectReviewMutationPayload {
 type SettingsNode implements Node {
   idlePageUrl: String
   loginBackgroundImage: String
+  logoUrl: String
+  lightLogoUrl: String
   id: ID!
   phase: Phase!
   startText: String
