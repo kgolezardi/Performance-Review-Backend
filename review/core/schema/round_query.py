@@ -3,11 +3,10 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 
 from accounts.schema.user_query import UserNode
-from core.interactors.settings import get_active_round
-from core.schema.enums import Phase
 from core.interactors.round import get_all_rounds, get_round
+from core.interactors.settings import get_active_round
 from core.models import Round
-from core.schema.project_query import ProjectNode
+from core.schema.enums import Phase
 
 
 class RoundNode(DjangoObjectType):
@@ -19,11 +18,7 @@ class RoundNode(DjangoObjectType):
         interfaces = (relay.Node,)
 
     phase = Phase(required=True)
-    projects = graphene.List(graphene.NonNull(ProjectNode), required=True)
     participants = graphene.List(graphene.NonNull(UserNode), required=True)
-
-    def resolve_projects(self, info):
-        return self.projects.all()
 
     def resolve_participants(self, info):
         return self.participants.all()

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import Project, ProjectReview, PersonReview, ProjectComment, Settings, ManagerPersonReview, \
+from core.models import ProjectReview, PersonReview, ProjectComment, Settings, ManagerPersonReview, \
     ManagerProjectComment, Round, Participation
 
 
@@ -68,7 +68,6 @@ class ParticipationAdmin(admin.ModelAdmin):
                     'has_started_manager_review', 'has_started_results')
 
 
-admin.site.register(Project)
 admin.site.register(ProjectReview, ProjectReviewAdmin)
 admin.site.register(ProjectComment, ProjectCommentAdmin)
 admin.site.register(PersonReview, PersonReviewAdmin)

@@ -9,11 +9,6 @@ def can_participate(user, review_round=None):
     return user in review_round.participants.all() or user.is_hr
 
 
-def is_project_available(project, review_round=None):
-    review_round = review_round or get_active_round()
-    return project in review_round.projects.all()
-
-
 def can_review_person(user, reviewee):
     if not user.is_authenticated:
         return False

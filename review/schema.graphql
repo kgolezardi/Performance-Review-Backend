@@ -154,11 +154,6 @@ type ProjectCommentNode implements Node {
   rating: Evaluation
 }
 
-type ProjectNode implements Node {
-  name: String!
-  id: ID!
-}
-
 type ProjectReviewNode implements Node {
   projectName: String!
   reviewee: UserNode!
@@ -179,7 +174,6 @@ type RoundNode implements Node {
   title: String!
   id: ID!
   phase: Phase!
-  projects: [ProjectNode!]!
   participants: [UserNode!]!
 }
 
@@ -319,7 +313,5 @@ type ViewerNode implements Node {
   personReview(id: ID!): PersonReviewNode
   personReviews: [PersonReviewNode!]!
   findPersonReview(revieweeId: ID): PersonReviewNode
-  project(id: ID!): ProjectNode
-  projects: [ProjectNode!]!
   node(id: ID!): Node
 }
