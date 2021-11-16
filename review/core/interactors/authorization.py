@@ -35,14 +35,11 @@ def can_review_person(user, reviewee):
     return False
 
 
-def can_review_project(user, project):
+def can_create_project_review(user):
     if not user.is_authenticated:
         return False
 
     if not can_participate(user, get_active_round()):
-        return False
-
-    if not is_project_available(project, get_active_round()):
         return False
 
     if not is_at_phase(Phase.SELF_REVIEW):
@@ -50,7 +47,7 @@ def can_review_project(user, project):
     return True
 
 
-def can_delete_project_review(user, project_review):
+def can_alter_project_review(user, project_review):
     if not user.is_authenticated:
         return False
 

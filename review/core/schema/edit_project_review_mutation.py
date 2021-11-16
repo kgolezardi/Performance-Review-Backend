@@ -2,17 +2,18 @@ import graphene
 from graphene import ClientIDMutation
 
 from accounts.models import User
-from core.interactors.project_review import save_project_review
-from core.models import Project
+from core.interactors.project_review import edit_project_review
+from core.models import ProjectReview
 from core.schema.enums import Evaluation
 from core.schema.project_review_query import ProjectReviewNode
 from graphql_api.schema.utils import get_node
 from graphql_api.schema.with_viewer import WithViewer
 
 
-class SaveProjectReviewMutation(WithViewer, ClientIDMutation):
+class EditProjectReviewMutation(WithViewer, ClientIDMutation):
     class Input:
-        project_id = graphene.NonNull(graphene.ID)
+        project_review_id = graphene.NonNull(graphene.ID)
+        project_name = graphene.String()
         text = graphene.String()
         rating = Evaluation()
         reviewers_id = graphene.List(graphene.NonNull(graphene.ID))
@@ -21,7 +22,7 @@ class SaveProjectReviewMutation(WithViewer, ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **args):
-        project = get_node(args['project_id'], info, Project)
+        project_review = get_node(args['project_review_id'], info, ProjectReview)
         reviewee = info.context.user
 
         reviewers_id = args.get('reviewers_id', None)
@@ -31,8 +32,8 @@ class SaveProjectReviewMutation(WithViewer, ClientIDMutation):
         else:
             reviewers = None
 
-        if project is None:
-            return SaveProjectReviewMutation(project_review=None)
+        if project_review is None:
+            return EditProjectReviewMutation(project_review=None)
 
-        project_review = save_project_review(project, reviewee, reviewers=reviewers, **args)
-        return SaveProjectReviewMutation(project_review=project_review)
+        project_review = edit_project_review(project_review, reviewee, reviewers=reviewers, **args)
+        return EditProjectReviewMutation(project_review=project_review)

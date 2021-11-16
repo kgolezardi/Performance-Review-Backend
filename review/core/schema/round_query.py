@@ -28,7 +28,6 @@ class RoundNode(DjangoObjectType):
     def resolve_participants(self, info):
         return self.participants.all()
 
-
     @classmethod
     def get_node(cls, info, id):
         return get_round(info.context.user, id)

@@ -5,7 +5,7 @@ from core.models import Project, ProjectReview, PersonReview, ProjectComment, Se
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
-    list_display = ('round', 'project', 'reviewee', 'get_reviewers')
+    list_display = ('round', 'project_name', 'reviewee', 'get_reviewers')
 
     def get_reviewers(self, obj):
         return ', '.join(obj.reviewers.values_list('username', flat=True))
@@ -14,17 +14,17 @@ class ProjectReviewAdmin(admin.ModelAdmin):
 
 
 class ProjectCommentAdmin(admin.ModelAdmin):
-    list_display = ('get_round', 'get_project', 'reviewer', 'get_reviewee')
+    list_display = ('get_round', 'get_project_name', 'reviewer', 'get_reviewee')
 
     def get_round(self, obj):
         return obj.project_review.round
 
     get_round.short_description = 'Round'
 
-    def get_project(self, obj):
-        return obj.project_review.project
+    def get_project_name(self, obj):
+        return obj.project_review.project_name
 
-    get_project.short_description = 'Project'
+    get_project_name.short_description = 'Project name'
 
     def get_reviewee(self, obj):
         return obj.project_review.reviewee
@@ -37,17 +37,17 @@ class PersonReviewAdmin(admin.ModelAdmin):
 
 
 class ManagerProjectCommentAdmin(admin.ModelAdmin):
-    list_display = ('get_round', 'get_project', 'get_reviewee')
+    list_display = ('get_round', 'get_project_name', 'get_reviewee')
 
     def get_round(self, obj):
         return obj.project_review.round
 
     get_round.short_description = 'Round'
 
-    def get_project(self, obj):
-        return obj.project_review.project
+    def get_project_name(self, obj):
+        return obj.project_review.project_name
 
-    get_project.short_description = 'Project'
+    get_project_name.short_description = 'Project name'
 
     def get_reviewee(self, obj):
         return obj.project_review.reviewee
