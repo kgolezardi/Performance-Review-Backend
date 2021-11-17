@@ -7,21 +7,10 @@ from core.enums import Evaluation, Phase, State
 MAX_TEXT_LENGTH = 10000
 
 
-class Project(models.Model):
-    name = models.CharField(max_length=255, blank=False)
-
-    class Meta:
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
-
-
 class Round(models.Model):
     title = models.CharField(max_length=512, null=False, blank=True)
     phase = models.IntegerField(choices=Phase.choices(), null=False, blank=False)
-    participants = models.ManyToManyField(User)
-    projects = models.ManyToManyField(Project)
+    participants = models.ManyToManyField(User, blank=True)
     start_text_self_review = models.TextField(blank=True, null=True)
     start_text_peer_review = models.TextField(blank=True, null=True)
     start_text_manager_review = models.TextField(blank=True, null=True)
@@ -51,11 +40,11 @@ class Round(models.Model):
 
 class ProjectReview(models.Model):
     round = models.ForeignKey(Round, on_delete=models.PROTECT)
-    project = models.ForeignKey(Project, on_delete=models.PROTECT)
+    project_name = models.CharField(max_length=512, null=False, blank=False)
     reviewee = models.ForeignKey(User, on_delete=models.PROTECT)
     text = models.TextField(blank=True, null=True)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
-    reviewers = models.ManyToManyField(User, related_name='project_reviews_to_comment')
+    reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviews_to_comment')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

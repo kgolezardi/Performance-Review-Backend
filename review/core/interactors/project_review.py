@@ -1,16 +1,35 @@
 from accounts.models import User
 from core.enums import Phase
-from core.interactors.authorization import can_review_project, can_delete_project_review
+from core.interactors.authorization import can_create_project_review, can_alter_project_review
 from core.interactors.settings import is_at_phase, get_active_round
 from core.interactors.utils import filter_query_set_for_manager_review
 from core.models import ProjectReview, MAX_TEXT_LENGTH
 
 
-def save_project_review(project, reviewee, **kwargs):
-    project_review = get_or_create_project_review(project=project, reviewee=reviewee)
-
-    if project_review is None:
+def create_project_review(project_name, reviewee):
+    if not can_create_project_review(reviewee):
         return None
+    if not project_name:
+        return None
+
+    project_review, created = ProjectReview.objects.get_or_create(
+        round=get_active_round(),
+        project_name=project_name,
+        reviewee=reviewee
+    )
+
+    if not created:
+        return None
+    return project_review
+
+
+def edit_project_review(project_review, reviewee, **kwargs):
+    if not can_alter_project_review(reviewee, project_review):
+        return None
+
+    project_name = kwargs.get('project_name', None)
+    if project_name:
+        project_review.project_name = project_name
 
     fields = ['text', 'rating']
     for field in fields:
@@ -52,18 +71,6 @@ def get_user_project_reviews(user, reviewee):
     return get_all_project_reviews(user).filter(reviewee=reviewee)
 
 
-def get_or_create_project_review(project, reviewee):
-    if not can_review_project(reviewee, project):
-        return None
-
-    project_review, created = ProjectReview.objects.get_or_create(
-        round=get_active_round(),
-        project=project,
-        reviewee=reviewee
-    )
-    return project_review
-
-
 def get_project_review(user, id):
     try:
         return get_all_project_reviews(user).get(id=id)
@@ -72,7 +79,7 @@ def get_project_review(user, id):
 
 
 def delete_project_review(user, project_review):
-    if not can_delete_project_review(user, project_review):
+    if not can_alter_project_review(user, project_review):
         return None
 
     project_review_id = project_review.id

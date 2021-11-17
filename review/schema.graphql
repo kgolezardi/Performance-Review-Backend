@@ -15,6 +15,17 @@ type ChangePasswordMutationPayload {
   clientMutationId: String
 }
 
+input CreateProjectReviewMutationInput {
+  projectName: String
+  clientMutationId: String
+}
+
+type CreateProjectReviewMutationPayload {
+  viewer: ViewerNode!
+  projectReview: ProjectReviewNode
+  clientMutationId: String
+}
+
 input DeleteProjectReviewMutationInput {
   projectReviewId: ID!
   clientMutationId: String
@@ -23,6 +34,21 @@ input DeleteProjectReviewMutationInput {
 type DeleteProjectReviewMutationPayload {
   viewer: ViewerNode!
   deletedProjectReviewId: ID
+  clientMutationId: String
+}
+
+input EditProjectReviewMutationInput {
+  projectReviewId: ID!
+  projectName: String
+  text: String
+  rating: Evaluation
+  reviewersId: [ID!]
+  clientMutationId: String
+}
+
+type EditProjectReviewMutationPayload {
+  viewer: ViewerNode!
+  projectReview: ProjectReviewNode
   clientMutationId: String
 }
 
@@ -74,7 +100,8 @@ type ManagerProjectCommentNode implements Node {
 
 type Mutation {
   savePersonReview(input: SavePersonReviewMutationInput!): SavePersonReviewMutationPayload!
-  saveProjectReview(input: SaveProjectReviewMutationInput!): SaveProjectReviewMutationPayload!
+  createProjectReview(input: CreateProjectReviewMutationInput!): CreateProjectReviewMutationPayload!
+  editProjectReview(input: EditProjectReviewMutationInput!): EditProjectReviewMutationPayload!
   deleteProjectReview(input: DeleteProjectReviewMutationInput!): DeleteProjectReviewMutationPayload!
   saveProjectComment(input: SaveProjectCommentMutationInput!): SaveProjectCommentMutationPayload!
   saveManagerPersonReview(input: SaveManagerPersonReviewMutationInput!): SaveManagerPersonReviewMutationPayload!
@@ -127,13 +154,8 @@ type ProjectCommentNode implements Node {
   rating: Evaluation
 }
 
-type ProjectNode implements Node {
-  name: String!
-  id: ID!
-}
-
 type ProjectReviewNode implements Node {
-  project: ProjectNode!
+  projectName: String!
   reviewee: UserNode!
   text: String
   id: ID!
@@ -152,7 +174,6 @@ type RoundNode implements Node {
   title: String!
   id: ID!
   phase: Phase!
-  projects: [ProjectNode!]!
   participants: [UserNode!]!
 }
 
@@ -225,20 +246,6 @@ type SaveProjectCommentMutationPayload {
   clientMutationId: String
 }
 
-input SaveProjectReviewMutationInput {
-  projectId: ID!
-  text: String
-  rating: Evaluation
-  reviewersId: [ID!]
-  clientMutationId: String
-}
-
-type SaveProjectReviewMutationPayload {
-  viewer: ViewerNode!
-  projectReview: ProjectReviewNode
-  clientMutationId: String
-}
-
 type SettingsNode implements Node {
   idlePageUrl: String
   loginBackgroundImage: String
@@ -306,7 +313,5 @@ type ViewerNode implements Node {
   personReview(id: ID!): PersonReviewNode
   personReviews: [PersonReviewNode!]!
   findPersonReview(revieweeId: ID): PersonReviewNode
-  project(id: ID!): ProjectNode
-  projects: [ProjectNode!]!
   node(id: ID!): Node
 }

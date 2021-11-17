@@ -17,7 +17,7 @@ class ProjectReviewNode(DjangoObjectType):
         model = ProjectReview
         fields = [
             'reviewee',
-            'project',
+            'project_name',
             'text',
         ]
         interfaces = (relay.Node,)
