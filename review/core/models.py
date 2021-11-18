@@ -17,6 +17,13 @@ class Round(models.Model):
     start_text_results = models.TextField(blank=True, null=True)
     start_text_idle = models.TextField(blank=True, null=True)
     manager_overall_review_text = models.TextField(blank=True, null=True)
+    self_review_sahabiness_help_modal_text = models.TextField(blank=True, null=True)
+    self_review_problem_solving_help_modal_text = models.TextField(blank=True, null=True)
+    self_review_execution_help_modal_text = models.TextField(blank=True, null=True)
+    self_review_thought_leadership_help_modal_text = models.TextField(blank=True, null=True)
+    self_review_leadership_help_modal_text = models.TextField(blank=True, null=True)
+    self_review_presence_help_modal_text = models.TextField(blank=True, null=True)
+    self_review_project_review_help_modal_text = models.TextField(blank=True, null=True)
 
     def is_at_phase(self, phase):
         return self.phase == phase.value
