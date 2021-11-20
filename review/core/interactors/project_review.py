@@ -28,7 +28,9 @@ def edit_project_review(project_review, reviewee, **kwargs):
         return None
 
     project_name = kwargs.get('project_name', None)
-    if project_name:
+    if project_name and project_name != project_review.project_name:
+        if ProjectReview.objects.filter(project_name=project_name).exists():
+            return None
         project_review.project_name = project_name
 
     fields = ['text', 'rating']
