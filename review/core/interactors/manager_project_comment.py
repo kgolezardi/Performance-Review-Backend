@@ -14,8 +14,8 @@ def save_manager_project_comment(project_review, manager, **kwargs):
     if not can_write_manager_project_comment(manager, project_review):
         return None
 
-    rating = kwargs.get('rating', None)
-    if rating is not None:
+    if 'rating' in kwargs:
+        rating = kwargs.get('rating')
         manager_project_comment.rating = rating
 
     manager_project_comment.save()
