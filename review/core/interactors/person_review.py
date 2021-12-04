@@ -16,8 +16,8 @@ def save_person_review(reviewee, reviewer, **kwargs):
               'thought_leadership_comment', 'leadership_rating', 'leadership_comment', 'presence_rating',
               'presence_comment', 'strengths', 'weaknesses']
     for field in fields:
-        value = kwargs.get(field, None)
-        if value is not None:
+        if field in kwargs:
+            value = kwargs.get(field)
             if field in ['sahabiness_comment',
                          'problem_solving_comment',
                          'execution_comment',

@@ -35,14 +35,14 @@ def edit_project_review(project_review, reviewee, **kwargs):
 
     fields = ['text', 'rating']
     for field in fields:
-        value = kwargs.get(field, None)
-        if value is not None:
+        if field in kwargs:
+            value = kwargs.get(field)
             if field in ['text']:
                 value = value[:MAX_TEXT_LENGTH]
             project_review.__setattr__(field, value)
 
-    reviewers = kwargs.get('reviewers', None)
-    if reviewers is not None:
+    if 'reviewers' in kwargs:
+        reviewers = kwargs.get('reviewers')
         if reviewee in reviewers:
             reviewers.remove(reviewee)
 

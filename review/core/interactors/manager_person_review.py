@@ -17,8 +17,8 @@ def save_manager_person_review(reviewee, manager, **kwargs):
     fields = ['sahabiness_rating', 'problem_solving_rating', 'execution_rating', 'thought_leadership_rating',
               'leadership_rating', 'presence_rating', 'overall_rating']
     for field in fields:
-        value = kwargs.get(field, None)
-        if value is not None:
+        if field in kwargs:
+            value = kwargs.get(field)
             manager_person_review.__setattr__(field, value)
 
     manager_person_review.save()

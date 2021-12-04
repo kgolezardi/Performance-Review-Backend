@@ -14,8 +14,8 @@ def save_project_comment(project_review, reviewer, **kwargs):
 
     fields = ['text', 'rating']
     for field in fields:
-        value = kwargs.get(field, None)
-        if value is not None:
+        if field in kwargs:
+            value = kwargs.get(field)
             if field in ['text']:
                 value = value[:MAX_TEXT_LENGTH]
             project_comment.__setattr__(field, value)
