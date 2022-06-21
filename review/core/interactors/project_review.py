@@ -29,7 +29,11 @@ def edit_project_review(project_review, reviewee, **kwargs):
 
     project_name = kwargs.get('project_name', None)
     if project_name and project_name != project_review.project_name:
-        if ProjectReview.objects.filter(project_name=project_name).exists():
+        if ProjectReview.objects.filter(
+                round=project_review.round,
+                project_name=project_name,
+                reviewee=reviewee
+        ).exists():
             return None
         project_review.project_name = project_name
 
