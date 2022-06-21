@@ -82,6 +82,14 @@ class PersonReview(models.Model):
     round = models.ForeignKey(Round, on_delete=models.PROTECT)
     reviewee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='person_reviews')
     reviewer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='authored_person_reviews')
+
+    strengths = ArrayField(models.TextField(), size=3, null=True, blank=True)
+    weaknesses = ArrayField(models.TextField(), size=3, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    state = models.IntegerField(choices=State.choices(), default=State.TODO.value)
+
+    # Not currently used
     sahabiness_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     sahabiness_comment = models.TextField(null=True, blank=True)
     problem_solving_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
@@ -94,11 +102,6 @@ class PersonReview(models.Model):
     leadership_comment = models.TextField(null=True, blank=True)
     presence_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     presence_comment = models.TextField(null=True, blank=True)
-    strengths = ArrayField(models.TextField(), size=3, null=True, blank=True)
-    weaknesses = ArrayField(models.TextField(), size=3, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    state = models.IntegerField(choices=State.choices(), default=State.TODO.value)
 
     def is_self_review(self):
         return self.reviewee == self.reviewer
@@ -110,14 +113,16 @@ class PersonReview(models.Model):
 class ManagerPersonReview(models.Model):
     round = models.ForeignKey(Round, on_delete=models.PROTECT)
     reviewee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='manager_person_reviews')
+    overall_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Not currently used
     sahabiness_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     problem_solving_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     execution_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     thought_leadership_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     leadership_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
     presence_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
-    overall_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['created_at']

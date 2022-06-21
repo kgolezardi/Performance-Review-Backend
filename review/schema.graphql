@@ -83,12 +83,6 @@ type LogoutMutationPayload {
 type ManagerPersonReviewNode implements Node {
   reviewee: UserNode!
   id: ID!
-  sahabinessRating: Evaluation
-  problemSolvingRating: Evaluation
-  executionRating: Evaluation
-  thoughtLeadershipRating: Evaluation
-  leadershipRating: Evaluation
-  presenceRating: Evaluation
   overallRating: Evaluation
 }
 
@@ -118,21 +112,9 @@ interface Node {
 
 type PersonReviewNode implements Node {
   reviewee: UserNode!
-  sahabinessComment: String
-  problemSolvingComment: String
-  executionComment: String
-  thoughtLeadershipComment: String
-  leadershipComment: String
-  presenceComment: String
   strengths: [String!]
   weaknesses: [String!]
   id: ID!
-  sahabinessRating: Evaluation
-  problemSolvingRating: Evaluation
-  executionRating: Evaluation
-  thoughtLeadershipRating: Evaluation
-  leadershipRating: Evaluation
-  presenceRating: Evaluation
   state: State!
   reviewer: UserNode
   isSelfReview: Boolean!
@@ -179,12 +161,6 @@ type RoundNode implements Node {
 
 input SaveManagerPersonReviewMutationInput {
   revieweeId: ID!
-  sahabinessRating: Evaluation
-  problemSolvingRating: Evaluation
-  executionRating: Evaluation
-  thoughtLeadershipRating: Evaluation
-  leadershipRating: Evaluation
-  presenceRating: Evaluation
   overallRating: Evaluation
   clientMutationId: String
 }
@@ -209,18 +185,6 @@ type SaveManagerProjectCommentMutationPayload {
 
 input SavePersonReviewMutationInput {
   revieweeId: ID!
-  sahabinessRating: Evaluation
-  sahabinessComment: String
-  problemSolvingRating: Evaluation
-  problemSolvingComment: String
-  executionRating: Evaluation
-  executionComment: String
-  thoughtLeadershipRating: Evaluation
-  thoughtLeadershipComment: String
-  leadershipRating: Evaluation
-  leadershipComment: String
-  presenceRating: Evaluation
-  presenceComment: String
   strengths: [String!]
   weaknesses: [String!]
   state: State

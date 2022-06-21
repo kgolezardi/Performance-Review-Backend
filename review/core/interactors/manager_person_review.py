@@ -14,8 +14,8 @@ def save_manager_person_review(reviewee, manager, **kwargs):
     if not can_write_manager_person_review(manager, reviewee):
         return None
 
-    fields = ['sahabiness_rating', 'problem_solving_rating', 'execution_rating', 'thought_leadership_rating',
-              'leadership_rating', 'presence_rating', 'overall_rating']
+    # FIXME: Other fields will be added soon
+    fields = ['overall_rating']
     for field in fields:
         if field in kwargs:
             value = kwargs.get(field)

@@ -11,23 +11,11 @@ def save_person_review(reviewee, reviewer, **kwargs):
     if person_review is None:
         return None
 
-    fields = ['sahabiness_rating', 'sahabiness_comment', 'problem_solving_rating',
-              'problem_solving_comment', 'execution_rating', 'execution_comment', 'thought_leadership_rating',
-              'thought_leadership_comment', 'leadership_rating', 'leadership_comment', 'presence_rating',
-              'presence_comment', 'strengths', 'weaknesses']
+    fields = ['strengths', 'weaknesses']
     for field in fields:
         if field in kwargs:
             value = kwargs.get(field)
-            if field in ['sahabiness_comment',
-                         'problem_solving_comment',
-                         'execution_comment',
-                         'thought_leadership_comment',
-                         'leadership_comment',
-                         'presence_comment']:
-                value = value[:MAX_TEXT_LENGTH]
-            if field in ['strengths', 'weaknesses']:
-                value = list(map(lambda v: v[:MAX_TEXT_LENGTH], value[:3]))
-
+            value = list(map(lambda v: v[:MAX_TEXT_LENGTH], value[:3]))
             person_review.__setattr__(field, value)
 
     state = kwargs.get('state', None)
