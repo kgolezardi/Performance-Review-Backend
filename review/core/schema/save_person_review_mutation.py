@@ -12,21 +12,8 @@ from graphql_api.schema.with_viewer import WithViewer
 class SavePersonReviewMutation(WithViewer, ClientIDMutation):
     class Input:
         reviewee_id = graphene.NonNull(graphene.ID)
-        sahabiness_rating = Evaluation()
-        sahabiness_comment = graphene.String()
-        problem_solving_rating = Evaluation()
-        problem_solving_comment = graphene.String()
-        execution_rating = Evaluation()
-        execution_comment = graphene.String()
-        thought_leadership_rating = Evaluation()
-        thought_leadership_comment = graphene.String()
-        leadership_rating = Evaluation()
-        leadership_comment = graphene.String()
-        presence_rating = Evaluation()
-        presence_comment = graphene.String()
         strengths = graphene.List(graphene.NonNull(graphene.String))
         weaknesses = graphene.List(graphene.NonNull(graphene.String))
-
         state = State()
 
     person_review = graphene.Field(PersonReviewNode)

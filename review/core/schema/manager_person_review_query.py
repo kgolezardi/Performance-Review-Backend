@@ -20,12 +20,6 @@ class ManagerPersonReviewNode(DjangoObjectType):
         ]
         interfaces = (relay.Node,)
 
-    sahabiness_rating = Evaluation()
-    problem_solving_rating = Evaluation()
-    execution_rating = Evaluation()
-    thought_leadership_rating = Evaluation()
-    leadership_rating = Evaluation()
-    presence_rating = Evaluation()
     overall_rating = Evaluation()
 
     @classmethod
