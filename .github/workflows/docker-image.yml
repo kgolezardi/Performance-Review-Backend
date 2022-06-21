@@ -35,7 +35,10 @@ jobs:
       name: Collect statics
       run: |
         (cd review && cp sample.env .env && python manage.py collectstatic)
-    - 
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    -
       name: Docker meta for api
       id: meta_api
       uses: docker/metadata-action@v3
