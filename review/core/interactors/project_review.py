@@ -45,14 +45,17 @@ def edit_project_review(project_review, reviewee, **kwargs):
                 value = value[:MAX_TEXT_LENGTH]
             project_review.__setattr__(field, value)
 
-    if 'reviewers' in kwargs:
-        reviewers = kwargs.get('reviewers')
+    reviewers = kwargs.get('reviewers', None)
+    if reviewers is not None:
         if reviewee in reviewers:
             reviewers.remove(reviewee)
 
         project_review.reviewers.clear()
         for reviewer in reviewers:
             project_review.reviewers.add(reviewer)
+
+    if 'consulted_with_manager' in kwargs:
+        project_review.consulted_with_manager = kwargs.get('consulted_with_manager')
 
     project_review.save()
     return project_review

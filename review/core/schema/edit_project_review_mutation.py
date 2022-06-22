@@ -16,6 +16,7 @@ class EditProjectReviewMutation(WithViewer, ClientIDMutation):
         project_name = graphene.String()
         text = graphene.String()
         rating = Evaluation()
+        consulted_with_manager = graphene.Boolean()
         reviewers_id = graphene.List(graphene.NonNull(graphene.ID))
 
     project_review = graphene.Field(ProjectReviewNode)
