@@ -42,6 +42,7 @@ input EditProjectReviewMutationInput {
   projectName: String
   text: String
   rating: Evaluation
+  consultedWithManager: Boolean
   reviewersId: [ID!]
   clientMutationId: String
 }
@@ -140,6 +141,7 @@ type ProjectReviewNode implements Node {
   projectName: String!
   reviewee: UserNode!
   text: String
+  consultedWithManager: Boolean!
   id: ID!
   rating: Evaluation
   reviewers: [UserNode!]!

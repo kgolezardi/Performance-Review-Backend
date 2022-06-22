@@ -51,6 +51,7 @@ class ProjectReview(models.Model):
     reviewee = models.ForeignKey(User, on_delete=models.PROTECT)
     text = models.TextField(blank=True, null=True)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
+    consulted_with_manager = models.BooleanField(default=False)
     reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviews_to_comment')
     created_at = models.DateTimeField(auto_now_add=True)
 
