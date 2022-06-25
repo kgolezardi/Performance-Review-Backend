@@ -137,7 +137,7 @@ class ManagerPersonReview(models.Model):
 
 
 class Settings(models.Model):
-    active_round = models.ForeignKey(Round, on_delete=models.PROTECT)
+    active_round = models.ForeignKey(Round, on_delete=models.PROTECT, null=False)
     idle_page_url = models.CharField(max_length=512, null=True, blank=True)
     login_background_image = models.CharField(max_length=512, null=True, blank=True)
     logo_url = models.CharField(max_length=512, null=True, blank=True)
