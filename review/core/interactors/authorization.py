@@ -214,17 +214,19 @@ def can_view_manager_overall_review_text(user):
     return True
 
 
-def can_view_reviewer(user, reviewee):
-    if not is_at_phase(Phase.MANAGER_REVIEW):
-        return False
-    if not is_manager_of_user_or_hr(manager=user, user=reviewee):
-        return False
+def can_view_reviewer(user, reviewee, round):
+    if round.reviewers_are_anonymous:
+        if not is_at_phase(Phase.MANAGER_REVIEW):
+            return False
+        if not is_manager_of_user_or_hr(manager=user, user=reviewee):
+            return False
+        return True
     return True
 
 
 def can_view_person_review_reviewer(user, person_review):
-    return can_view_reviewer(user, person_review.reviewee)
+    return can_view_reviewer(user, person_review.reviewee, person_review.round)
 
 
 def can_view_project_comment_reviewer(user, project_comment):
-    return can_view_reviewer(user, project_comment.project_review.reviewee)
+    return can_view_reviewer(user, project_comment.project_review.reviewee, project_comment.project_review.round)
