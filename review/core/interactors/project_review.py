@@ -142,6 +142,5 @@ def get_project_review_reviewers(project_review):
 
 
 def get_project_review_rating(project_review):
-    if not is_at_phase(Phase.PEER_REVIEW):
-        return project_review.rating
-    return None
+    # We may decide to not show reviewee's rating in peer review to their peers
+    return project_review.rating
