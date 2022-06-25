@@ -32,23 +32,17 @@ class UserNodeManagerPersonReviewExtension(Extension):
         base = UserNode
 
     manager_person_review = graphene.Field(ManagerPersonReviewNode,
-                                           description="get or create a manager person review about this user from "
-                                                       "logged in user")
+                                           description="Get (or create for manager) a manager person review about this "
+                                                       "user")
 
     def resolve_manager_person_review(self, info):
-        manager = info.context.user
-        return get_or_create_manager_person_review(reviewee=self, manager=manager)
+        user = info.context.user
+        return get_or_create_manager_person_review(reviewee=self, user=user)
 
 
 class ManagerPersonReviewQuery(graphene.ObjectType):
     manager_person_review = relay.Node.Field(ManagerPersonReviewNode)
     manager_person_reviews = graphene.List(graphene.NonNull(ManagerPersonReviewNode), required=True)
-    find_manager_person_review = graphene.Field(ManagerPersonReviewNode, reviewee_id=graphene.ID())
 
     def resolve_manager_person_reviews(self, info):
         return get_all_manager_person_reviews(info.context.user)
-
-    def resolve_find_manager_person_review(self, info, reviewee_id):
-        reviewee = get_node(reviewee_id, info, User)
-        manager = info.context.user
-        return get_or_create_manager_person_review(reviewee=reviewee, manager=manager)

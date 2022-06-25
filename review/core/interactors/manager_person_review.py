@@ -6,7 +6,7 @@ from core.models import ManagerPersonReview
 
 
 def save_manager_person_review(reviewee, manager, **kwargs):
-    manager_person_review = get_or_create_manager_person_review(reviewee=reviewee, manager=manager)
+    manager_person_review = get_or_create_manager_person_review(reviewee=reviewee, user=manager)
 
     if manager_person_review is None:
         return None
@@ -34,13 +34,21 @@ def get_all_manager_person_reviews(user):
     return ManagerPersonReview.objects.none()
 
 
-def get_or_create_manager_person_review(*, reviewee, manager):
-    if not can_view_manager_person_review(manager, reviewee):
+def get_or_create_manager_person_review(*, reviewee, user):
+    if not can_view_manager_person_review(user, reviewee):
         return None
-    manager_person_review, _ = ManagerPersonReview.objects.get_or_create(
-        round=get_active_round(),
-        reviewee=reviewee,
-    )
+    try:
+        manager_person_review = ManagerPersonReview.objects.get(
+            round=get_active_round(),
+            reviewee=reviewee,
+        )
+    except ManagerPersonReview.DoesNotExist:
+        if not can_write_manager_person_review(user, reviewee):
+            return None
+        manager_person_review = ManagerPersonReview.objects.create(
+            round=get_active_round(),
+            reviewee=reviewee,
+        )
     return manager_person_review
 
 

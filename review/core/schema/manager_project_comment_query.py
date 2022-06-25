@@ -30,12 +30,12 @@ class ProjectReviewNodeManagerCommentsExtension(Extension):
         base = ProjectReviewNode
 
     manager_comment = graphene.Field(ManagerProjectCommentNode,
-                                     description="get or create a manager project comment about this project review "
-                                                 "from the logged in user")
+                                     description="Get (or create for manager) the manager project comment on this "
+                                                 "project review")
 
     def resolve_manager_comment(self, info):
-        manager = info.context.user
-        return get_or_create_manager_project_comment(project_review=self, manager=manager)
+        user = info.context.user
+        return get_or_create_manager_project_comment(project_review=self, user=user)
 
 
 class ManagerProjectCommentQuery(graphene.ObjectType):

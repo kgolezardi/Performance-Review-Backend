@@ -37,7 +37,7 @@ class ProjectReviewNodeCommentsExtension(Extension):
         base = ProjectReviewNode
 
     comment = graphene.Field(ProjectCommentNode,
-                             description="get or create a project comment about this project review from the logged "
+                             description="Get or create a project comment about this project review from the logged "
                                          "in user")
     comments = graphene.List(graphene.NonNull(ProjectCommentNode), required=True)
 
