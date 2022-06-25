@@ -32,7 +32,7 @@ class RoundNode(DjangoObjectType):
 
 class RoundQuery(graphene.ObjectType):
     round = relay.Node.Field(RoundNode)
-    active_round = graphene.Field(RoundNode)
+    active_round = graphene.NonNull(RoundNode)
     rounds = graphene.List(graphene.NonNull(RoundNode), required=True)
 
     def resolve_active_round(self, info):

@@ -289,7 +289,7 @@ type ViewerNode implements Node {
   user(id: ID!): UserNode
   me: UserNode
   round(id: ID!): RoundNode
-  activeRound: RoundNode
+  activeRound: RoundNode!
   rounds: [RoundNode!]!
   managerProjectComment(id: ID!): ManagerProjectCommentNode
   managerProjectComments: [ManagerProjectCommentNode!]!
