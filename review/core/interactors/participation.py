@@ -13,7 +13,7 @@ def get_or_create_participation(user, review_round):
     return participation
 
 
-def has_user_started(user):  # TODO manager adjustment phase
+def has_user_started(user):
     participation = get_or_create_participation(user, get_active_round())
     if participation is None:
         return None
