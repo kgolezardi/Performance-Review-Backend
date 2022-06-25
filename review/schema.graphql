@@ -172,6 +172,8 @@ type Query {
 
 type RoundNode implements Node {
   title: String!
+  maxProjectReviews: Int!
+  maxReviewers: Int!
   id: ID!
   phase: Phase!
   participants: [UserNode!]!
