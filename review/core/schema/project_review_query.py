@@ -42,7 +42,7 @@ class UserNodeProjectReviewExtension(Extension):
         base = UserNode
 
     project_reviews = graphene.List(graphene.NonNull(ProjectReviewNode), required=True,
-                                    description="list of project reviews about this user")
+                                    description="List of project reviews about this user")
 
     def resolve_project_reviews(self, info):
         user = info.context.user

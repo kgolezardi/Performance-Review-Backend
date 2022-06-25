@@ -1,5 +1,6 @@
 from core.enums import Phase, State
-from core.interactors.authorization import can_review_person, can_view_person_review_reviewer
+from core.interactors.authorization import can_write_person_review, can_view_person_review_reviewer, \
+    can_view_self_person_review, can_view_peer_person_review
 from core.interactors.settings import is_at_phase, get_active_round
 from core.interactors.utils import filter_query_set_for_manager_review
 from core.models import PersonReview, MAX_TEXT_LENGTH
@@ -47,14 +48,40 @@ def get_user_person_reviews(user, reviewee):
 
 
 def get_or_create_person_review(*, reviewee, reviewer):
-    if not can_review_person(reviewer, reviewee):
+    if not can_write_person_review(reviewer, reviewee):
         return None
-
-    person_review, created = PersonReview.objects.get_or_create(
+    return PersonReview.objects.get_or_create(
         round=get_active_round(),
         reviewee=reviewee,
         reviewer=reviewer
     )
+
+
+def get_or_create_self_person_review(*, reviewee, user):
+    if not can_view_self_person_review(user, reviewee):
+        return None
+    try:
+        person_review = PersonReview.objects.get(
+            round=get_active_round(),
+            reviewee=reviewee,
+            reviewer=reviewee,
+        )
+    except PersonReview.DoesNotExist:
+        person_review = get_or_create_person_review(reviewee=reviewee, reviewer=reviewee)
+    return person_review
+
+
+def get_or_create_peer_person_review(*, reviewee, user):
+    if not can_view_peer_person_review(user, reviewee):
+        return None
+    try:
+        person_review = PersonReview.objects.get(
+            round=get_active_round(),
+            reviewee=reviewee,
+            reviewer=user,
+        )
+    except PersonReview.DoesNotExist:
+        person_review = get_or_create_person_review(reviewee=reviewee, reviewer=user)
     return person_review
 
 

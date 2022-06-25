@@ -6,7 +6,7 @@ from core.models import ManagerProjectComment
 
 
 def save_manager_project_comment(project_review, manager, **kwargs):
-    manager_project_comment = get_or_create_manager_project_comment(project_review=project_review, manager=manager)
+    manager_project_comment = get_or_create_manager_project_comment(project_review=project_review, user=manager)
 
     if manager_project_comment is None:
         return None
@@ -31,10 +31,15 @@ def get_all_manager_project_comments(user):
     return ManagerProjectComment.objects.none()
 
 
-def get_or_create_manager_project_comment(project_review, manager):
-    if not can_view_manager_project_comment(manager, project_review):
+def get_or_create_manager_project_comment(project_review, user):
+    if not can_view_manager_project_comment(user, project_review):
         return None
-    project_comment, _ = ManagerProjectComment.objects.get_or_create(project_review=project_review)
+    try:
+        project_comment = ManagerProjectComment.objects.get(project_review=project_review)
+    except ManagerProjectComment.DoesNotExist:
+        if not can_write_manager_project_comment(user, project_review):
+            return None
+        project_comment = ManagerProjectComment.objects.create(project_review=project_review)
     return project_comment
 
 

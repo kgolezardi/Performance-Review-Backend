@@ -255,7 +255,8 @@ type UserNode implements Node {
   isHr: Boolean!
   id: ID!
   isManager: Boolean!
-  personReview: PersonReviewNode
+  selfPersonReview: PersonReviewNode
+  peerPersonReview: PersonReviewNode
   personReviews: [PersonReviewNode!]!
   projectReviews: [ProjectReviewNode!]!
   managerPersonReview: ManagerPersonReviewNode
@@ -276,7 +277,6 @@ type ViewerNode implements Node {
   managerProjectComments: [ManagerProjectCommentNode!]!
   managerPersonReview(id: ID!): ManagerPersonReviewNode
   managerPersonReviews: [ManagerPersonReviewNode!]!
-  findManagerPersonReview(revieweeId: ID): ManagerPersonReviewNode
   projectComment(id: ID!): ProjectCommentNode
   projectComments: [ProjectCommentNode!]!
   projectReview(id: ID!): ProjectReviewNode
@@ -285,6 +285,5 @@ type ViewerNode implements Node {
   settings: SettingsNode!
   personReview(id: ID!): PersonReviewNode
   personReviews: [PersonReviewNode!]!
-  findPersonReview(revieweeId: ID): PersonReviewNode
   node(id: ID!): Node
 }

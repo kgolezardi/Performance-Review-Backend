@@ -9,7 +9,7 @@ def can_participate(user, review_round=None):
     return user in review_round.participants.all() or user.is_hr
 
 
-def can_review_person(user, reviewee):
+def can_view_self_person_review(user, reviewee):
     if not user.is_authenticated:
         return False
 
@@ -18,13 +18,42 @@ def can_review_person(user, reviewee):
     if not can_participate(reviewee, get_active_round()):
         return False
 
-    if is_at_phase(Phase.SELF_REVIEW):
+    if is_at_phase(Phase.SELF_REVIEW) or is_at_phase(Phase.RESULTS):
         if user == reviewee:
             return True
         return False
 
+    if is_at_phase(Phase.MANAGER_REVIEW):
+        if user == reviewee.manager:
+            return True
+        return False
+    return False
+
+
+def can_view_peer_person_review(user, reviewee):
+    if not user.is_authenticated:
+        return False
+
+    if not can_participate(user, get_active_round()):
+        return False
+    if not can_participate(reviewee, get_active_round()):
+        return False
+
     if is_at_phase(Phase.PEER_REVIEW):
-        if ProjectReview.objects.filter(reviewee=reviewee, reviewers=user).exists():
+        if ProjectReview.objects.filter(round=get_active_round(), reviewee=reviewee, reviewers=user).exists():
+            return True
+        return False
+    return False
+
+
+def can_write_person_review(user, reviewee):
+    if is_at_phase(Phase.SELF_REVIEW):
+        if can_view_self_person_review(user, reviewee) and user == reviewee:
+            return True
+        return False
+
+    if is_at_phase(Phase.PEER_REVIEW):
+        if can_view_peer_person_review(user, reviewee):
             return True
         return False
     return False
@@ -85,13 +114,22 @@ def can_view_manager_person_review(user, reviewee):
         return False
 
     if is_at_phase(Phase.MANAGER_REVIEW):
-        if is_manager_of_user_or_hr(manager=user, user=reviewee):
-            return True
+        if not is_manager_of_user_or_hr(manager=user, user=reviewee):
+            return False
+        return True
+
+    if is_at_phase(Phase.RESULTS):
+        if user != reviewee:
+            return False
+        return True
     return False
 
 
 def can_write_manager_person_review(user, reviewee):
     if not can_view_manager_person_review(user, reviewee):
+        return False
+
+    if not is_at_phase(Phase.MANAGER_REVIEW):
         return False
 
     if reviewee.manager != user:
@@ -103,22 +141,29 @@ def can_view_manager_project_comment(user, project_review):
     if not user.is_authenticated:
         return False
 
-    if not is_at_phase(Phase.MANAGER_REVIEW):
-        return False
-
     if not can_participate(user, get_active_round()):
         return False
 
     if project_review.round != get_active_round():
         return False
 
-    if not is_manager_of_user_or_hr(manager=user, user=project_review.reviewee):
-        return False
-    return True
+    if is_at_phase(Phase.MANAGER_REVIEW):
+        if not is_manager_of_user_or_hr(manager=user, user=project_review.reviewee):
+            return False
+        return True
+
+    if is_at_phase(Phase.RESULTS):
+        if user != project_review.reviewee:
+            return False
+        return True
+    return False
 
 
 def can_write_manager_project_comment(user, project_review):
     if not can_view_manager_project_comment(user, project_review):
+        return False
+
+    if not is_at_phase(Phase.MANAGER_REVIEW):
         return False
 
     if project_review.reviewee.manager != user:
