@@ -14,6 +14,8 @@ class RoundNode(DjangoObjectType):
         model = Round
         fields = [
             'title',
+            'max_project_reviews',
+            'max_reviewers',
         ]
         interfaces = (relay.Node,)
 

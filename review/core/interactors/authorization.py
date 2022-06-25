@@ -68,6 +68,10 @@ def can_create_project_review(user):
 
     if not is_at_phase(Phase.SELF_REVIEW):
         return False
+
+    active_round = get_active_round()
+    if ProjectReview.objects.filter(round=active_round, reviewee=user).count() >= active_round.max_project_reviews:
+        return False
     return True
 
 
