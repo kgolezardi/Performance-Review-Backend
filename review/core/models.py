@@ -12,6 +12,7 @@ class Round(models.Model):
     phase = models.IntegerField(choices=Phase.choices(), null=False, blank=False)
     participants = models.ManyToManyField(User, blank=True)
     start_text_self_review = models.TextField(blank=True, null=True)
+    start_text_manager_adjustment = models.TextField(blank=True, null=True)
     start_text_peer_review = models.TextField(blank=True, null=True)
     start_text_manager_review = models.TextField(blank=True, null=True)
     start_text_results = models.TextField(blank=True, null=True)
@@ -32,6 +33,8 @@ class Round(models.Model):
     def start_text(self):
         if self.is_at_phase(Phase.SELF_REVIEW):
             return self.start_text_self_review
+        if self.is_at_phase(Phase.MANAGER_ADJUSTMENT):
+            return self.start_text_manager_adjustment
         if self.is_at_phase(Phase.PEER_REVIEW):
             return self.start_text_peer_review
         if self.is_at_phase(Phase.MANAGER_REVIEW):
@@ -52,6 +55,7 @@ class ProjectReview(models.Model):
     text = models.TextField(blank=True, null=True)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
     consulted_with_manager = models.BooleanField(default=False)
+    approved_by_manager = models.BooleanField(default=False)
     reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviews_to_comment')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -140,7 +144,7 @@ class Settings(models.Model):
         verbose_name_plural = "settings"
 
     def __str__(self):
-        return 'Settings: %s (%s)' % (self.active_round, self.active_round.phase)
+        return 'Settings: %s (%s)' % (self.active_round, Phase(self.active_round.phase).name)
 
     def save(self, *args, **kwargs):
         self.__class__.objects.exclude(id=self.id).delete()
@@ -159,6 +163,7 @@ class Participation(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     round = models.ForeignKey(Round, on_delete=models.PROTECT)
     has_started_self_review = models.BooleanField(default=False, null=False, blank=False)
+    has_started_manager_adjustment = models.BooleanField(default=False, null=False, blank=False)
     has_started_peer_review = models.BooleanField(default=False, null=False, blank=False)
     has_started_manager_review = models.BooleanField(default=False, null=False, blank=False)
     has_started_results = models.BooleanField(default=False, null=False, blank=False)

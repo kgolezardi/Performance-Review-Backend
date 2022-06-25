@@ -14,6 +14,7 @@ class Phase(BaseEnum):
     MANAGER_REVIEW = 3
     RESULTS = 4
     IDLE = 5
+    MANAGER_ADJUSTMENT = 6
 
 
 class State(BaseEnum):

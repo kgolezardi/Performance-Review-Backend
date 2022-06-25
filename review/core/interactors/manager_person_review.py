@@ -31,6 +31,8 @@ def get_all_manager_person_reviews(user):
     if is_at_phase(Phase.MANAGER_REVIEW):
         qs = ManagerPersonReview.objects.filter(round=get_active_round())
         return filter_query_set_for_manager_review(user, qs, 'reviewee')
+    if is_at_phase(Phase.RESULTS):
+        return ManagerPersonReview.objects.filter(round=get_active_round(), reviewee=user)
     return ManagerPersonReview.objects.none()
 
 

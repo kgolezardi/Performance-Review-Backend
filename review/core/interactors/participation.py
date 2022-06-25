@@ -19,6 +19,8 @@ def has_user_started(user):
         return None
     if is_at_phase(Phase.SELF_REVIEW):
         return participation.has_started_self_review
+    if is_at_phase(Phase.MANAGER_ADJUSTMENT):
+        return participation.has_started_manager_adjustment
     if is_at_phase(Phase.PEER_REVIEW):
         return participation.has_started_peer_review
     if is_at_phase(Phase.MANAGER_REVIEW):
@@ -34,6 +36,8 @@ def start_review(user):
         return False
     if is_at_phase(Phase.SELF_REVIEW):
         participation.has_started_self_review = True
+    if is_at_phase(Phase.MANAGER_ADJUSTMENT):
+        participation.has_started_manager_adjustment = True
     elif is_at_phase(Phase.PEER_REVIEW):
         participation.has_started_peer_review = True
     elif is_at_phase(Phase.MANAGER_REVIEW):

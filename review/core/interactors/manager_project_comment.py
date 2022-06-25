@@ -28,6 +28,11 @@ def get_all_manager_project_comments(user):
     if is_at_phase(Phase.MANAGER_REVIEW):
         qs = ManagerProjectComment.objects.filter(project_review__round=get_active_round())
         return filter_query_set_for_manager_review(user, qs, 'project_review__reviewee')
+    if is_at_phase(Phase.RESULTS):
+        return ManagerProjectComment.objects.filter(
+            project_review__round=get_active_round(),
+            project_review__reviewee=user,
+        )
     return ManagerProjectComment.objects.none()
 
 

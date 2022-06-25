@@ -23,7 +23,7 @@ def can_view_self_person_review(user, reviewee):
             return True
         return False
 
-    if is_at_phase(Phase.MANAGER_REVIEW):
+    if is_at_phase(Phase.MANAGER_ADJUSTMENT) or is_at_phase(Phase.MANAGER_REVIEW):
         if user == reviewee.manager:
             return True
         return False
@@ -82,6 +82,21 @@ def can_alter_project_review(user, project_review):
         return False
 
     if not is_at_phase(Phase.SELF_REVIEW):
+        return False
+    return True
+
+
+def can_adjust_project_review(user, project_review):
+    if not user.is_authenticated:
+        return False
+
+    if project_review.reviewee.manager != user:
+        return False
+
+    if project_review.round != get_active_round():
+        return False
+
+    if not is_at_phase(Phase.MANAGER_ADJUSTMENT):
         return False
     return True
 

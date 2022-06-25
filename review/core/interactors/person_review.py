@@ -33,6 +33,9 @@ def get_all_person_reviews(user):
         return PersonReview.objects.none()
     if is_at_phase(Phase.SELF_REVIEW):
         return PersonReview.objects.filter(round=get_active_round(), reviewer=user, reviewee=user)
+    if is_at_phase(Phase.MANAGER_ADJUSTMENT):
+        qs = PersonReview.objects.filter(round=get_active_round())
+        return filter_query_set_for_manager_review(user, qs, 'reviewee')
     if is_at_phase(Phase.PEER_REVIEW):
         return PersonReview.objects.filter(round=get_active_round(), reviewer=user).exclude(reviewee=user)
     if is_at_phase(Phase.MANAGER_REVIEW):

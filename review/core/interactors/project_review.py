@@ -1,6 +1,7 @@
 from accounts.models import User
 from core.enums import Phase
-from core.interactors.authorization import can_create_project_review, can_alter_project_review
+from core.interactors.authorization import can_create_project_review, can_alter_project_review, \
+    can_adjust_project_review
 from core.interactors.settings import is_at_phase, get_active_round
 from core.interactors.utils import filter_query_set_for_manager_review
 from core.models import ProjectReview, MAX_TEXT_LENGTH
@@ -61,11 +62,34 @@ def edit_project_review(project_review, reviewee, **kwargs):
     return project_review
 
 
+def adjust_project_review(project_review, manager, **kwargs):
+    if not can_adjust_project_review(manager, project_review):
+        return None
+
+    reviewers = kwargs.get('reviewers', None)
+    if reviewers is not None:
+        if project_review.reviewee in reviewers:
+            reviewers.remove(project_review.reviewee)
+
+        project_review.reviewers.clear()
+        for reviewer in reviewers:
+            project_review.reviewers.add(reviewer)
+
+    if 'approved_by_manager' in kwargs:
+        project_review.approved_by_manager = kwargs.get('approved_by_manager')
+
+    project_review.save()
+    return project_review
+
+
 def get_all_project_reviews(user):
     if not user.is_authenticated:
         return ProjectReview.objects.none()
     if is_at_phase(Phase.SELF_REVIEW):
         return ProjectReview.objects.filter(round=get_active_round(), reviewee=user)
+    if is_at_phase(Phase.MANAGER_ADJUSTMENT):
+        qs = ProjectReview.objects.filter(round=get_active_round())
+        return filter_query_set_for_manager_review(user, qs, 'reviewee')
     if is_at_phase(Phase.PEER_REVIEW):
         return ProjectReview.objects.filter(round=get_active_round(), reviewers=user)
     if is_at_phase(Phase.MANAGER_REVIEW):
@@ -99,7 +123,7 @@ def delete_project_review(user, project_review):
 def get_users_to_review(user):
     if not user.is_authenticated:
         return User.objects.none()
-    if is_at_phase(Phase.MANAGER_REVIEW):
+    if is_at_phase(Phase.MANAGER_REVIEW) or is_at_phase(Phase.MANAGER_ADJUSTMENT):
         qs = User.objects.filter(round=get_active_round())
         return filter_query_set_for_manager_review(user, qs)
     if is_at_phase(Phase.PEER_REVIEW):
@@ -111,7 +135,7 @@ def get_users_to_review(user):
 
 
 def get_project_review_reviewers(project_review):
-    if not is_at_phase(Phase.SELF_REVIEW):
+    if not is_at_phase(Phase.SELF_REVIEW) and not is_at_phase(Phase.MANAGER_ADJUSTMENT):
         return User.objects.none()
     return project_review.reviewers.all()
 
