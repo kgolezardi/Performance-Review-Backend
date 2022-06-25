@@ -48,6 +48,7 @@ def edit_project_review(project_review, reviewee, **kwargs):
 
     reviewers = kwargs.get('reviewers', None)
     if reviewers is not None:
+        reviewers = reviewers[:project_review.round.max_reviewers]
         if reviewee in reviewers:
             reviewers.remove(reviewee)
 

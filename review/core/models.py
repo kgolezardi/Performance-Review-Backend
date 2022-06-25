@@ -11,6 +11,8 @@ class Round(models.Model):
     title = models.CharField(max_length=512, null=False, blank=True)
     phase = models.IntegerField(choices=Phase.choices(), null=False, blank=False)
     participants = models.ManyToManyField(User, blank=True)
+    max_project_reviews = models.IntegerField(null=False, blank=False, default=5)
+    max_reviewers = models.IntegerField(null=False, blank=False, default=5)
     start_text_self_review = models.TextField(blank=True, null=True)
     start_text_manager_adjustment = models.TextField(blank=True, null=True)
     start_text_peer_review = models.TextField(blank=True, null=True)
