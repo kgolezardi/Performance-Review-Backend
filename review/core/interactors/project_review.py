@@ -24,6 +24,19 @@ def create_project_review(project_name, reviewee):
     return project_review
 
 
+def set_project_review_reviewers(project_review, reviewers):
+    if reviewers is not None:
+        reviewers = reviewers[:project_review.round.max_reviewers]
+        if project_review.reviewee in reviewers:
+            reviewers.remove(project_review.reviewee)
+        if project_review.reviewee.manager in reviewers:
+            reviewers.remove(project_review.reviewee.manager)
+
+        project_review.reviewers.clear()
+        for reviewer in reviewers:
+            project_review.reviewers.add(reviewer)
+
+
 def edit_project_review(project_review, reviewee, **kwargs):
     if not can_alter_project_review(reviewee, project_review):
         return None
@@ -47,14 +60,7 @@ def edit_project_review(project_review, reviewee, **kwargs):
             project_review.__setattr__(field, value)
 
     reviewers = kwargs.get('reviewers', None)
-    if reviewers is not None:
-        reviewers = reviewers[:project_review.round.max_reviewers]
-        if reviewee in reviewers:
-            reviewers.remove(reviewee)
-
-        project_review.reviewers.clear()
-        for reviewer in reviewers:
-            project_review.reviewers.add(reviewer)
+    set_project_review_reviewers(project_review, reviewers)
 
     if 'consulted_with_manager' in kwargs:
         project_review.consulted_with_manager = kwargs.get('consulted_with_manager')
@@ -68,13 +74,7 @@ def adjust_project_review(project_review, manager, **kwargs):
         return None
 
     reviewers = kwargs.get('reviewers', None)
-    if reviewers is not None:
-        if project_review.reviewee in reviewers:
-            reviewers.remove(project_review.reviewee)
-
-        project_review.reviewers.clear()
-        for reviewer in reviewers:
-            project_review.reviewers.add(reviewer)
+    set_project_review_reviewers(project_review, reviewers)
 
     if 'approved_by_manager' in kwargs:
         project_review.approved_by_manager = kwargs.get('approved_by_manager')
