@@ -3,6 +3,19 @@ schema {
   mutation: Mutation
 }
 
+input AdjustProjectReviewMutationInput {
+  projectReviewId: ID!
+  approvedByManager: Boolean
+  reviewersId: [ID!]
+  clientMutationId: String
+}
+
+type AdjustProjectReviewMutationPayload {
+  viewer: ViewerNode!
+  projectReview: ProjectReviewNode
+  clientMutationId: String
+}
+
 input ChangePasswordMutationInput {
   oldPassword: String!
   newPassword: String!
@@ -98,6 +111,7 @@ type Mutation {
   createProjectReview(input: CreateProjectReviewMutationInput!): CreateProjectReviewMutationPayload!
   editProjectReview(input: EditProjectReviewMutationInput!): EditProjectReviewMutationPayload!
   deleteProjectReview(input: DeleteProjectReviewMutationInput!): DeleteProjectReviewMutationPayload!
+  adjustProjectReview(input: AdjustProjectReviewMutationInput!): AdjustProjectReviewMutationPayload!
   saveProjectComment(input: SaveProjectCommentMutationInput!): SaveProjectCommentMutationPayload!
   saveManagerPersonReview(input: SaveManagerPersonReviewMutationInput!): SaveManagerPersonReviewMutationPayload!
   saveManagerProjectComment(input: SaveManagerProjectCommentMutationInput!): SaveManagerProjectCommentMutationPayload!
@@ -127,6 +141,7 @@ enum Phase {
   MANAGER_REVIEW
   RESULTS
   IDLE
+  MANAGER_ADJUSTMENT
 }
 
 type ProjectCommentNode implements Node {
@@ -142,6 +157,7 @@ type ProjectReviewNode implements Node {
   reviewee: UserNode!
   text: String
   consultedWithManager: Boolean!
+  approvedByManager: Boolean!
   id: ID!
   rating: Evaluation
   reviewers: [UserNode!]!

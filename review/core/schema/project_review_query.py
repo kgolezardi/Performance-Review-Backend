@@ -20,6 +20,7 @@ class ProjectReviewNode(DjangoObjectType):
             'project_name',
             'text',
             'consulted_with_manager',
+            'approved_by_manager',
         ]
         interfaces = (relay.Node,)
 
