@@ -53,11 +53,12 @@ def get_user_person_reviews(user, reviewee):
 def get_or_create_person_review(*, reviewee, reviewer):
     if not can_write_person_review(reviewer, reviewee):
         return None
-    return PersonReview.objects.get_or_create(
+    person_review, _ = PersonReview.objects.get_or_create(
         round=get_active_round(),
         reviewee=reviewee,
         reviewer=reviewer
     )
+    return person_review
 
 
 def get_or_create_self_person_review(*, reviewee, user):
