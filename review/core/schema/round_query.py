@@ -16,6 +16,10 @@ class RoundNode(DjangoObjectType):
             'title',
             'max_project_reviews',
             'max_reviewers',
+            'self_review_project_fields',
+            'peer_review_project_fields',
+            'manager_review_project_fields',
+            'private_manager_review_project_fields',
         ]
         interfaces = (relay.Node,)
 

@@ -14,13 +14,21 @@ class Round(models.Model):
     reviewers_are_anonymous = models.BooleanField(default=True)
     max_project_reviews = models.IntegerField(null=False, blank=False, default=5)
     max_reviewers = models.IntegerField(null=False, blank=False, default=5)
+
+    self_review_project_fields = models.TextField(blank=False, null=False)
+    peer_review_project_fields = models.TextField(blank=False, null=False)
+    manager_review_project_fields = models.TextField(blank=False, null=False)
+    private_manager_review_project_fields = models.TextField(blank=False, null=False)
+
     start_text_self_review = models.TextField(blank=True, null=True)
     start_text_manager_adjustment = models.TextField(blank=True, null=True)
     start_text_peer_review = models.TextField(blank=True, null=True)
     start_text_manager_review = models.TextField(blank=True, null=True)
     start_text_results = models.TextField(blank=True, null=True)
     start_text_idle = models.TextField(blank=True, null=True)
+
     manager_overall_review_text = models.TextField(blank=True, null=True)
+
     self_review_sahabiness_help_modal_text = models.TextField(blank=True, null=True)
     self_review_problem_solving_help_modal_text = models.TextField(blank=True, null=True)
     self_review_execution_help_modal_text = models.TextField(blank=True, null=True)
