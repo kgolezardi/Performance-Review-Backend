@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from core.models import ProjectReview, PersonReview, ProjectComment, Settings, ManagerPersonReview, \
-    ManagerProjectComment, Round, Participation
+    ManagerProjectComment, Round, Participation, Answer, Question
 
 
 class ProjectReviewAdmin(admin.ModelAdmin):
@@ -68,6 +68,51 @@ class ParticipationAdmin(admin.ModelAdmin):
                     'has_started_manager_review', 'has_started_results')
 
 
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ('get_round', 'get_question_type', 'get_reviewer', 'get_reviewee', 'get_preview')
+
+    def get_round(self, obj):
+        if obj.projectreview_set.exists():
+            return obj.projectreview_set.first().round
+        if obj.projectcomment_set.exists():
+            return obj.projectcomment_set.first().project_review.round
+        return '----'
+
+    get_round.short_description = 'Round'
+
+    def get_question_type(self, obj):
+        if obj.projectreview_set.exists():
+            return 'Self project review'
+        if obj.projectcomment_set.exists():
+            return 'Peer project comment'
+        return '----'
+
+    get_question_type.short_description = 'Question Type'
+
+    def get_reviewer(self, obj):
+        if obj.projectreview_set.exists():
+            return obj.projectreview_set.first().reviewee
+        if obj.projectcomment_set.exists():
+            return obj.projectcomment_set.first().reviewer
+        return '----'
+
+    get_reviewer.short_description = 'Reviewer'
+
+    def get_reviewee(self, obj):
+        if obj.projectreview_set.exists():
+            return obj.projectreview_set.first().reviewee
+        if obj.projectcomment_set.exists():
+            return obj.projectcomment_set.first().project_review.reviewee
+        return '----'
+
+    get_reviewee.short_description = 'Reviewee'
+
+    def get_preview(self, obj):
+        return obj.value[:50] if obj.value else ''
+
+    get_preview.short_description = 'Preview'
+
+
 admin.site.register(ProjectReview, ProjectReviewAdmin)
 admin.site.register(ProjectComment, ProjectCommentAdmin)
 admin.site.register(PersonReview, PersonReviewAdmin)
@@ -76,3 +121,5 @@ admin.site.register(ManagerProjectComment, ManagerProjectCommentAdmin)
 admin.site.register(Round, RoundAdmin)
 admin.site.register(Settings)
 admin.site.register(Participation, ParticipationAdmin)
+admin.site.register(Question)
+admin.site.register(Answer, AnswerAdmin)

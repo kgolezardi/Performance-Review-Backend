@@ -2,8 +2,8 @@ from core.enums import Phase
 from core.interactors.authorization import can_comment_on_project_review, can_view_project_comment_reviewer
 from core.interactors.person_review import save_person_review
 from core.interactors.settings import is_at_phase, get_active_round
-from core.interactors.utils import filter_query_set_for_manager_review
-from core.models import ProjectComment, MAX_TEXT_LENGTH
+from core.interactors.utils import filter_query_set_for_manager_review, set_review_answers
+from core.models import ProjectComment
 
 
 def save_project_comment(project_review, reviewer, **kwargs):
@@ -12,13 +12,13 @@ def save_project_comment(project_review, reviewer, **kwargs):
     if project_comment is None:
         return None
 
-    fields = ['text', 'rating']
-    for field in fields:
-        if field in kwargs:
-            value = kwargs.get(field)
-            if field in ['text']:
-                value = value[:MAX_TEXT_LENGTH]
-            project_comment.__setattr__(field, value)
+    if 'rating' in kwargs:
+        rating = kwargs.get('rating')
+        project_review.rating = rating
+
+    answers = kwargs.get('answers', None)
+    set_review_answers(project_comment, answers,
+                       project_comment.project_review.round.peer_review_project_questions.all())
 
     project_comment.save()
     # save person review to update peer review state
@@ -69,3 +69,8 @@ def get_project_comment_reviewer(user, project_comment):
     if not can_view_project_comment_reviewer(user, project_comment):
         return None
     return project_comment.reviewer
+
+
+def get_project_comment_answers(project_comment):
+    # We may decide in the future to show some answers only to the manager or only to the reviewee
+    return project_comment.answers.all()
