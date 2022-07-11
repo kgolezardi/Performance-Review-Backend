@@ -16,6 +16,16 @@ type AdjustProjectReviewMutationPayload {
   clientMutationId: String
 }
 
+input AnswerInput {
+  questionId: ID!
+  value: String
+}
+
+type AnswerOutput {
+  value: String
+  questionId: ID!
+}
+
 input ChangePasswordMutationInput {
   oldPassword: String!
   newPassword: String!
@@ -53,7 +63,7 @@ type DeleteProjectReviewMutationPayload {
 input EditProjectReviewMutationInput {
   projectReviewId: ID!
   projectName: String
-  text: String
+  answers: [AnswerInput!]
   rating: Evaluation
   consultedWithManager: Boolean
   reviewersId: [ID!]
@@ -146,20 +156,20 @@ enum Phase {
 
 type ProjectCommentNode implements Node {
   projectReview: ProjectReviewNode!
-  text: String
   id: ID!
   reviewer: UserNode
   rating: Evaluation
+  answers: [AnswerOutput!]!
 }
 
 type ProjectReviewNode implements Node {
   projectName: String!
   reviewee: UserNode!
-  text: String
   consultedWithManager: Boolean!
   approvedByManager: Boolean!
   id: ID!
   rating: Evaluation
+  answers: [AnswerOutput!]!
   reviewers: [UserNode!]!
   comment: ProjectCommentNode
   comments: [ProjectCommentNode!]!
@@ -170,6 +180,22 @@ type Query {
   viewer: ViewerNode!
 }
 
+type QuestionNode implements Node {
+  label: String!
+  order: Int!
+  helpText: String
+  choices: [String!]
+  privateAnswerToPeerReviewers: Boolean!
+  privateAnswerToReviewee: Boolean!
+  id: ID!
+  questionType: QuestionType!
+}
+
+enum QuestionType {
+  TEXT
+  CHECKBOX_MULTIPLE
+}
+
 type RoundNode implements Node {
   title: String!
   maxProjectReviews: Int!
@@ -177,6 +203,9 @@ type RoundNode implements Node {
   id: ID!
   phase: Phase!
   participants: [UserNode!]!
+  selfReviewProjectQuestions: [QuestionNode!]!
+  peerReviewProjectQuestions: [QuestionNode!]!
+  managerReviewProjectQuestions: [QuestionNode!]!
 }
 
 input SaveManagerPersonReviewMutationInput {
@@ -219,7 +248,7 @@ type SavePersonReviewMutationPayload {
 
 input SaveProjectCommentMutationInput {
   projectReviewId: ID!
-  text: String
+  answers: [AnswerInput!]
   rating: Evaluation
   clientMutationId: String
 }

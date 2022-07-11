@@ -21,3 +21,8 @@ class State(BaseEnum):
     TODO = 1
     DOING = 2
     DONE = 3
+
+
+class QuestionType(BaseEnum):
+    TEXT = 1
+    CHECKBOX_MULTIPLE = 2

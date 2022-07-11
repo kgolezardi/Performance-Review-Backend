@@ -3,8 +3,8 @@ from core.enums import Phase
 from core.interactors.authorization import can_create_project_review, can_alter_project_review, \
     can_adjust_project_review
 from core.interactors.settings import is_at_phase, get_active_round
-from core.interactors.utils import filter_query_set_for_manager_review
-from core.models import ProjectReview, MAX_TEXT_LENGTH
+from core.interactors.utils import filter_query_set_for_manager_review, set_review_answers
+from core.models import ProjectReview
 
 
 def create_project_review(project_name, reviewee):
@@ -27,13 +27,14 @@ def create_project_review(project_name, reviewee):
 def set_project_review_reviewers(project_review, reviewers):
     if reviewers is not None:
         reviewers = reviewers[:project_review.round.max_reviewers]
-        if project_review.reviewee in reviewers:
-            reviewers.remove(project_review.reviewee)
-        if project_review.reviewee.manager in reviewers:
-            reviewers.remove(project_review.reviewee.manager)
-
         project_review.reviewers.clear()
         for reviewer in reviewers:
+            if reviewer == project_review.reviewee:
+                continue
+            if reviewer == project_review.reviewee.manager:
+                continue
+            if reviewer not in project_review.round.participants.all():
+                continue
             project_review.reviewers.add(reviewer)
 
 
@@ -51,13 +52,12 @@ def edit_project_review(project_review, reviewee, **kwargs):
             return None
         project_review.project_name = project_name
 
-    fields = ['text', 'rating']
-    for field in fields:
-        if field in kwargs:
-            value = kwargs.get(field)
-            if field in ['text']:
-                value = value[:MAX_TEXT_LENGTH]
-            project_review.__setattr__(field, value)
+    if 'rating' in kwargs:
+        rating = kwargs.get('rating')
+        project_review.rating = rating
+
+    answers = kwargs.get('answers', None)
+    set_review_answers(project_review, answers, project_review.round.self_review_project_questions.all())
 
     reviewers = kwargs.get('reviewers', None)
     set_project_review_reviewers(project_review, reviewers)
@@ -144,3 +144,9 @@ def get_project_review_reviewers(project_review):
 def get_project_review_rating(project_review):
     # We may decide to not show reviewee's rating in peer review to their peers
     return project_review.rating
+
+
+def get_project_review_answers(project_review):
+    if is_at_phase(Phase.PEER_REVIEW):
+        return project_review.answers.filter(question__private_answer_to_peer_reviewers=False)
+    return project_review.answers.all()

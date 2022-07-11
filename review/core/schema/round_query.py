@@ -7,6 +7,7 @@ from core.interactors.round import get_all_rounds, get_round
 from core.interactors.settings import get_active_round
 from core.models import Round
 from core.schema.enums import Phase
+from core.schema.question_node import QuestionNode
 
 
 class RoundNode(DjangoObjectType):
@@ -21,9 +22,21 @@ class RoundNode(DjangoObjectType):
 
     phase = Phase(required=True)
     participants = graphene.List(graphene.NonNull(UserNode), required=True)
+    self_review_project_questions = graphene.List(graphene.NonNull(QuestionNode), required=True)
+    peer_review_project_questions = graphene.List(graphene.NonNull(QuestionNode), required=True)
+    manager_review_project_questions = graphene.List(graphene.NonNull(QuestionNode), required=True)
 
     def resolve_participants(self, info):
         return self.participants.all()
+
+    def resolve_self_review_project_questions(self, info):
+        return self.self_review_project_questions.all()
+
+    def resolve_peer_review_project_questions(self, info):
+        return self.peer_review_project_questions.all()
+
+    def resolve_manager_review_project_questions(self, info):
+        return self.manager_review_project_questions.all()
 
     @classmethod
     def get_node(cls, info, id):

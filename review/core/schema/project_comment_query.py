@@ -4,9 +4,10 @@ from graphene_django import DjangoObjectType
 
 from accounts.schema.user_query import UserNode
 from core.interactors.project_comment import get_all_project_comments, get_project_comment, get_project_review_comments, \
-    get_or_create_project_comment, get_project_comment_reviewer
+    get_or_create_project_comment, get_project_comment_reviewer, get_project_comment_answers
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
+from .answer_types import AnswerOutput
 from .project_review_query import ProjectReviewNode
 from ..models import ProjectComment
 
@@ -15,17 +16,20 @@ class ProjectCommentNode(DjangoObjectType):
     class Meta:
         model = ProjectComment
         fields = [
-            'text',
             'project_review',
         ]
         interfaces = (relay.Node,)
 
     reviewer = graphene.Field(UserNode)
     rating = Evaluation()
+    answers = graphene.List(graphene.NonNull(AnswerOutput), required=True)
 
     def resolve_reviewer(self, info):
         user = info.context.user
         return get_project_comment_reviewer(user, self)
+
+    def resolve_answers(self, info):
+        return get_project_comment_answers(self)
 
     @classmethod
     def get_node(cls, info, id):

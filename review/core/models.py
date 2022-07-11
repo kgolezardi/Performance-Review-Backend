@@ -2,9 +2,35 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from accounts.models import User
-from core.enums import Evaluation, Phase, State
+from core.enums import Evaluation, Phase, State, QuestionType
 
 MAX_TEXT_LENGTH = 10000
+
+
+class Question(models.Model):
+    question_type = models.IntegerField(choices=QuestionType.choices(), null=False, blank=False)
+    label = models.CharField(max_length=200, null=False, blank=False)
+    order = models.IntegerField(default=0, null=False, blank=False)
+    help_text = models.TextField(blank=True, null=True)
+    choices = ArrayField(models.TextField(), null=True, blank=True)
+    private_answer_to_peer_reviewers = models.BooleanField(default=False)
+    private_answer_to_reviewee = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{}: {}'.format(self.id, self.label)
+
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.PROTECT)
+    value = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return '{}: {}'.format(self.id, self.value[:60] if self.value else '')
+
+    def save(self, *args, **kwargs):
+        if self.value:
+            self.value = self.value[:MAX_TEXT_LENGTH]
+        super().save(*args, **kwargs)
 
 
 class Round(models.Model):
@@ -14,6 +40,12 @@ class Round(models.Model):
     reviewers_are_anonymous = models.BooleanField(default=True)
     max_project_reviews = models.IntegerField(null=False, blank=False, default=5)
     max_reviewers = models.IntegerField(null=False, blank=False, default=5)
+
+    self_review_project_questions = models.ManyToManyField(Question, blank=True, related_name='self_reviews_asked')
+    peer_review_project_questions = models.ManyToManyField(Question, blank=True, related_name='peer_reviews_asked')
+    manager_review_project_questions = models.ManyToManyField(Question, blank=True,
+                                                              related_name='manager_reviews_asked')
+
     start_text_self_review = models.TextField(blank=True, null=True)
     start_text_manager_adjustment = models.TextField(blank=True, null=True)
     start_text_peer_review = models.TextField(blank=True, null=True)
@@ -21,6 +53,7 @@ class Round(models.Model):
     start_text_results = models.TextField(blank=True, null=True)
     start_text_idle = models.TextField(blank=True, null=True)
     manager_overall_review_text = models.TextField(blank=True, null=True)
+
     self_review_sahabiness_help_modal_text = models.TextField(blank=True, null=True)
     self_review_problem_solving_help_modal_text = models.TextField(blank=True, null=True)
     self_review_execution_help_modal_text = models.TextField(blank=True, null=True)
@@ -55,8 +88,8 @@ class ProjectReview(models.Model):
     round = models.ForeignKey(Round, on_delete=models.PROTECT)
     project_name = models.CharField(max_length=512, null=False, blank=False)
     reviewee = models.ForeignKey(User, on_delete=models.PROTECT)
-    text = models.TextField(blank=True, null=True)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
+    answers = models.ManyToManyField(Answer, blank=True)
     consulted_with_manager = models.BooleanField(default=False)
     approved_by_manager = models.BooleanField(default=False)
     reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviews_to_comment')
@@ -69,8 +102,8 @@ class ProjectReview(models.Model):
 class ProjectComment(models.Model):
     project_review = models.ForeignKey(ProjectReview, on_delete=models.PROTECT)
     reviewer = models.ForeignKey(User, on_delete=models.PROTECT)
-    text = models.TextField(blank=True, null=True)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
+    answers = models.ManyToManyField(Answer, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
