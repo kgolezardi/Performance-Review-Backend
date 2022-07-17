@@ -14,7 +14,7 @@ def save_project_comment(project_review, reviewer, **kwargs):
 
     if 'rating' in kwargs:
         rating = kwargs.get('rating')
-        project_review.rating = rating
+        project_comment.rating = rating
 
     answers = kwargs.get('answers', None)
     set_review_answers(project_comment, answers,
