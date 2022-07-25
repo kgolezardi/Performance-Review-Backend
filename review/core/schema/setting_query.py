@@ -17,13 +17,6 @@ class SettingsNode(DjangoObjectType):
     phase = Phase(required=True)
     start_text = graphene.Field(graphene.String)
     manager_overall_review_text = graphene.Field(graphene.String)
-    self_review_sahabiness_help_modal_text = graphene.Field(graphene.String)
-    self_review_problem_solving_help_modal_text = graphene.Field(graphene.String)
-    self_review_execution_help_modal_text = graphene.Field(graphene.String)
-    self_review_thought_leadership_help_modal_text = graphene.Field(graphene.String)
-    self_review_leadership_help_modal_text = graphene.Field(graphene.String)
-    self_review_presence_help_modal_text = graphene.Field(graphene.String)
-    self_review_project_review_help_modal_text = graphene.Field(graphene.String)
 
     def resolve_phase(self, info):
         return self.active_round.phase
@@ -35,27 +28,6 @@ class SettingsNode(DjangoObjectType):
         if can_view_manager_overall_review_text(info.context.user):
             return self.active_round.manager_overall_review_text
         return None
-
-    def resolve_self_review_sahabiness_help_modal_text(self, info):
-        return self.active_round.self_review_sahabiness_help_modal_text
-
-    def resolve_self_review_problem_solving_help_modal_text(self, info):
-        return self.active_round.self_review_problem_solving_help_modal_text
-
-    def resolve_self_review_execution_help_modal_text(self, info):
-        return self.active_round.self_review_execution_help_modal_text
-
-    def resolve_self_review_thought_leadership_help_modal_text(self, info):
-        return self.active_round.self_review_thought_leadership_help_modal_text
-
-    def resolve_self_review_leadership_help_modal_text(self, info):
-        return self.active_round.self_review_leadership_help_modal_text
-
-    def resolve_self_review_presence_help_modal_text(self, info):
-        return self.active_round.self_review_presence_help_modal_text
-
-    def resolve_self_review_project_review_help_modal_text(self, info):
-        return self.active_round.self_review_project_review_help_modal_text
 
 
 class SettingQuery(ObjectType):
