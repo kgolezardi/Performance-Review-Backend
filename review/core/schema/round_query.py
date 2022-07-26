@@ -3,7 +3,8 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 
 from accounts.schema.user_query import UserNode
-from core.interactors.round import get_all_rounds, get_round
+from core.interactors.round import get_all_rounds, get_round, get_self_review_project_questions, \
+    get_peer_review_project_questions, get_manager_review_project_questions
 from core.interactors.settings import get_active_round
 from core.models import Round
 from core.schema.enums import Phase
@@ -30,13 +31,13 @@ class RoundNode(DjangoObjectType):
         return self.participants.all()
 
     def resolve_self_review_project_questions(self, info):
-        return self.self_review_project_questions.all()
+        return get_self_review_project_questions(self)
 
     def resolve_peer_review_project_questions(self, info):
-        return self.peer_review_project_questions.all()
+        return get_peer_review_project_questions(self)
 
     def resolve_manager_review_project_questions(self, info):
-        return self.manager_review_project_questions.all()
+        return get_manager_review_project_questions(self)
 
     @classmethod
     def get_node(cls, info, id):

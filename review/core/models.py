@@ -16,6 +16,9 @@ class Question(models.Model):
     private_answer_to_peer_reviewers = models.BooleanField(default=False)
     private_answer_to_reviewee = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['order']
+
     def __str__(self):
         return '{}: {}'.format(self.id, self.label)
 
