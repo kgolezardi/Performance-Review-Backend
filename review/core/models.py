@@ -13,6 +13,7 @@ class Question(models.Model):
     order = models.IntegerField(default=0, null=False, blank=False)
     help_text = models.TextField(blank=True, null=True)
     choices = ArrayField(models.TextField(), null=True, blank=True)
+    max_choices = models.IntegerField(default=-1, null=False, blank=False)
     private_answer_to_peer_reviewers = models.BooleanField(default=False)
     private_answer_to_reviewee = models.BooleanField(default=False)
 
