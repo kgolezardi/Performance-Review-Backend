@@ -185,6 +185,7 @@ type QuestionNode implements Node {
   order: Int!
   helpText: String
   choices: [String!]
+  maxChoices: Int!
   privateAnswerToPeerReviewers: Boolean!
   privateAnswerToReviewee: Boolean!
   id: ID!

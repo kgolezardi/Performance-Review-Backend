@@ -12,6 +12,7 @@ class QuestionNode(DjangoObjectType):
             'label',
             'order',
             'choices',
+            'max_choices',
             'help_text',
             'private_answer_to_peer_reviewers',
             'private_answer_to_reviewee',
