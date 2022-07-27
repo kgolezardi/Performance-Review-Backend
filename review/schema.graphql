@@ -114,6 +114,7 @@ type ManagerProjectCommentNode implements Node {
   projectReview: ProjectReviewNode!
   id: ID!
   rating: Evaluation
+  answers: [AnswerOutput!]!
 }
 
 type Mutation {
@@ -225,6 +226,7 @@ type SaveManagerPersonReviewMutationPayload {
 input SaveManagerProjectCommentMutationInput {
   projectReviewId: ID!
   rating: Evaluation
+  answers: [AnswerInput!]
   clientMutationId: String
 }
 
