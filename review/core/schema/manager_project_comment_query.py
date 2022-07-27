@@ -3,9 +3,10 @@ from graphene import relay
 from graphene_django import DjangoObjectType
 
 from core.interactors.manager_project_comment import get_all_manager_project_comments, get_manager_project_comment, \
-    get_or_create_manager_project_comment
+    get_or_create_manager_project_comment, get_manager_project_comment_answers
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
+from .answer_types import AnswerOutput
 from .project_review_query import ProjectReviewNode
 from ..models import ManagerProjectComment
 
@@ -19,10 +20,14 @@ class ManagerProjectCommentNode(DjangoObjectType):
         interfaces = (relay.Node,)
 
     rating = Evaluation()
+    answers = graphene.List(graphene.NonNull(AnswerOutput), required=True)
 
     @classmethod
     def get_node(cls, info, id):
         return get_manager_project_comment(info.context.user, id)
+
+    def resolve_answers(self, info):
+        return get_manager_project_comment_answers(self)
 
 
 class ProjectReviewNodeManagerCommentsExtension(Extension):

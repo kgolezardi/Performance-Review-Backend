@@ -109,6 +109,7 @@ class ProjectComment(models.Model):
 class ManagerProjectComment(models.Model):
     project_review = models.ForeignKey(ProjectReview, on_delete=models.PROTECT)
     rating = models.IntegerField(choices=Evaluation.choices(), blank=True, null=True)
+    answers = models.ManyToManyField(Answer, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
