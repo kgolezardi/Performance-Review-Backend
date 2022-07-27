@@ -199,6 +199,7 @@ enum QuestionType {
 
 type RoundNode implements Node {
   title: String!
+  reviewersAreAnonymous: Boolean!
   maxProjectReviews: Int!
   maxReviewers: Int!
   id: ID!
