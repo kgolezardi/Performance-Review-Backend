@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
     'accounts',
     'core',
+    'reporting',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
+
+LOGIN_URL = '/admin/login/'
 
 STATIC_URL = '/django-statics/'
 STATIC_ROOT = root('staticfiles')
