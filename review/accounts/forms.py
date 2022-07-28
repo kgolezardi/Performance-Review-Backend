@@ -18,6 +18,7 @@ class UserChangeForm(django.contrib.auth.forms.UserChangeForm):
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
+    add_to_round = forms.BooleanField(label='Also set active round participants to these users', required=False)
 
 
 class CsvRowValidationForm(forms.Form):
