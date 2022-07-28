@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports</title>
+</head>
+<body>
+    <div style="padding: 10px 40px;" id="container">
+        <div style="display: inline; padding-right: 40px">
+            <a href="{% url 'reporting:self-review' %}">Self Review</a>
+        </div>
+        <div style="display: inline; padding-right: 40px">
+            <a href="{% url 'reporting:index' %}">Manager Adjustment</a>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

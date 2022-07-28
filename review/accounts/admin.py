@@ -7,10 +7,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import path
 
-from accounts.interactors.admin_progress import get_user_progress
 from accounts.interactors.user import add_user, set_user_manager, set_user_rankings
-from core.enums import Phase
-from core.interactors.settings import is_at_phase
 from .forms import UserCreationForm, UserChangeForm, CsvRowValidationForm, CsvImportForm
 from .models import User
 
@@ -20,7 +17,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('username', 'name', 'get_progess', 'manager')
+    list_display = ('username', 'name', 'manager')
     fieldsets = django.contrib.auth.admin.UserAdmin.fieldsets + (
         ('Review data', {'fields': ('employee_id', 'manager', 'avatar_url', 'ranking1', 'ranking2', 'is_hr')}),
     )
@@ -80,19 +77,3 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
             **self.admin_site.each_context(request)
         }
         return TemplateResponse(request, 'accounts/import_users.html', context)
-
-    def get_progess(self, obj):
-        progress = get_user_progress(obj)
-        if progress is None:
-            return ''
-        if is_at_phase(Phase.SELF_REVIEW):
-            res = 'Criteria: %d%% - SW: %d%% - P: %s' % (progress['performance_competencies'],
-                                                         progress['dominant_characteristics'],
-                                                         list(map(int, progress['projects'])))
-            return res
-        if is_at_phase(Phase.PEER_REVIEW):
-            res = ['%s: %s' % (peer.name, state.name) for peer, state in progress]
-            return ', '.join(res)
-        return ''
-
-    get_progess.short_description = 'Progress'
