@@ -53,9 +53,14 @@ def add_user(username, password, first_name, last_name, email, employee_id):
 
 def set_user_manager(username, manager_username):
     user = get_user_by_username(username)
-    manager = get_user_by_username(manager_username)
-    if user is None or manager is None:
+    if user is None:
         return False
+    if manager_username == '-':
+        manager = None
+    else:
+        manager = get_user_by_username(manager_username)
+        if manager is None:
+            return False
     user.manager = manager
     user.save()
     return True

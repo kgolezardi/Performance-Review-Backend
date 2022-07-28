@@ -8,6 +8,7 @@ from django.template.response import TemplateResponse
 from django.urls import path
 
 from accounts.interactors.user import add_user, set_user_manager, set_user_rankings
+from core.interactors.round import add_users_to_active_round
 from .forms import UserCreationForm, UserChangeForm, CsvRowValidationForm, CsvImportForm
 from .models import User
 
@@ -29,10 +30,12 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
 
     def import_users(self, request):
         if request.method == "POST":
+            add_to_round = 'add_to_round' in request.POST and request.POST['add_to_round'] == 'on'
             csv_content = StringIO(request.FILES["csv_file"].read().decode('utf-8'))
             reader = csv.DictReader(csv_content, delimiter=',')
             users_managers = []
             rankings = []
+            usernames = []
             created, updated, unsuccessful = 0, 0, 0
 
             for row in reader:
@@ -47,6 +50,7 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
                         users_managers.append((username, manager_username))
                     if ranking1 or ranking2:
                         rankings.append((username, ranking1, ranking2))
+                    usernames.append(username)
                 if status == 0:
                     updated += 1
                 elif status == 1:
@@ -63,6 +67,9 @@ class UserAdmin(django.contrib.auth.admin.UserAdmin):
                 success = set_user_rankings(username, ranking1, ranking2)
                 if not success:
                     unsuccessful += 1
+
+            if add_to_round:
+                add_users_to_active_round(usernames)
 
             level = messages.SUCCESS if unsuccessful == 0 else messages.WARNING
             self.message_user(request, "%d users were created, %d users got updated, and %d errors detected."
