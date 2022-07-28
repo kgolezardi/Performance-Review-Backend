@@ -106,6 +106,8 @@ type LogoutMutationPayload {
 
 type ManagerPersonReviewNode implements Node {
   reviewee: UserNode!
+  strengths: [String!]
+  weaknesses: [String!]
   id: ID!
   overallRating: Evaluation
 }
@@ -213,6 +215,8 @@ type RoundNode implements Node {
 
 input SaveManagerPersonReviewMutationInput {
   revieweeId: ID!
+  strengths: [String!]
+  weaknesses: [String!]
   overallRating: Evaluation
   clientMutationId: String
 }

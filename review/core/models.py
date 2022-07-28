@@ -152,6 +152,8 @@ class ManagerPersonReview(models.Model):
     round = models.ForeignKey(Round, on_delete=models.PROTECT)
     reviewee = models.ForeignKey(User, on_delete=models.PROTECT, related_name='manager_person_reviews')
     overall_rating = models.IntegerField(choices=Evaluation.choices(), null=True, blank=True)
+    strengths = ArrayField(models.TextField(), size=3, null=True, blank=True)
+    weaknesses = ArrayField(models.TextField(), size=3, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     # Not currently used
