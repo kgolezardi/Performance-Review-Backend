@@ -2,13 +2,11 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from accounts.models import User
 from accounts.schema.user_query import UserNode
-from core.interactors.manager_person_review import get_or_create_manager_person_review, get_all_manager_person_reviews,\
+from core.interactors.manager_person_review import get_or_create_manager_person_review, get_all_manager_person_reviews, \
     get_manager_person_review
 from core.schema.enums import Evaluation
 from graphql_api.schema.extension import Extension
-from graphql_api.schema.utils import get_node
 from ..models import ManagerPersonReview
 
 
@@ -17,6 +15,8 @@ class ManagerPersonReviewNode(DjangoObjectType):
         model = ManagerPersonReview
         fields = [
             'reviewee',
+            'strengths',
+            'weaknesses',
         ]
         interfaces = (relay.Node,)
 

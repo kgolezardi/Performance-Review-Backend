@@ -2,7 +2,7 @@ from core.enums import Phase
 from core.interactors.authorization import can_view_manager_person_review, can_write_manager_person_review
 from core.interactors.settings import is_at_phase, get_active_round
 from core.interactors.utils import filter_query_set_for_manager_review
-from core.models import ManagerPersonReview
+from core.models import ManagerPersonReview, MAX_TEXT_LENGTH
 
 
 def save_manager_person_review(reviewee, manager, **kwargs):
@@ -14,11 +14,12 @@ def save_manager_person_review(reviewee, manager, **kwargs):
     if not can_write_manager_person_review(manager, reviewee):
         return None
 
-    # FIXME: Other fields will be added soon
-    fields = ['overall_rating']
+    fields = ['overall_rating', 'strengths', 'weaknesses']
     for field in fields:
         if field in kwargs:
             value = kwargs.get(field)
+            if field in ['strengths', 'weaknesses']:
+                value = list(map(lambda v: v[:MAX_TEXT_LENGTH], value[:3]))
             manager_person_review.__setattr__(field, value)
 
     manager_person_review.save()
