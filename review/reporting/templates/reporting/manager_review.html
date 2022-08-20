@@ -1,0 +1,20 @@
+{% extends 'reporting/index.html' %}
+
+{% block content %}
+    <h1>Manager Review Reports</h1>
+    <p>
+        {% for manager, data in report.items %}
+            {{ manager }}: {{ data.completed }}/{{ data.total }} <br/>
+        {% endfor %}
+    </p>
+    <p>For a more detailed report, you can login to the system using an 'HR' account.</p>
+    <p>
+        <strong>Note:</strong>
+        For every person on the team, manager should:
+        <ul>
+            <li>Review every project (rating + questions marked as 'required for completion in reports' in admin)</li>
+            <li>Write down at least one strength and one weekness</li>
+            <li>Specify the overall rating</li>
+        </ul>
+    </p>
+{% endblock %}

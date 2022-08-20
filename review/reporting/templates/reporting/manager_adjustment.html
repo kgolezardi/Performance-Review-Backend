@@ -1,11 +1,13 @@
 {% extends 'reporting/index.html' %}
 
 {% block content %}
-    <h1>Self Review Reports</h1>
+    <h1>Manager Adjustment Reports</h1>
+
+    <p># of approved projects / # of projects to approve</p>
+
     <p>
         {% for manager, data in report.items %}
             {{ manager }}: {{ data.completed }}/{{ data.total }} <br/>
         {% endfor %}
     </p>
-    <p>Click here for a <a href="{% url 'reporting:self-review-detailed' %}">detailed report</a>...</p>
 {% endblock %}

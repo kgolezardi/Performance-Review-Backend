@@ -10,7 +10,13 @@
             <a href="{% url 'reporting:self-review' %}">Self Review</a>
         </div>
         <div style="display: inline; padding-right: 40px">
-            <a href="{% url 'reporting:index' %}">Manager Adjustment</a>
+            <a href="{% url 'reporting:manager-adjustment' %}">Manager Adjustment</a>
+        </div>
+        <div style="display: inline; padding-right: 40px">
+            <a href="{% url 'reporting:peer-review' %}">Peer Review</a>
+        </div>
+        <div style="display: inline; padding-right: 40px">
+            <a href="{% url 'reporting:manager-review' %}">Manager Review</a>
         </div>
 
         {% block content %}

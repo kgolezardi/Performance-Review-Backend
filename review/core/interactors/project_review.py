@@ -136,9 +136,10 @@ def get_users_to_review(user):
 
 
 def get_project_review_reviewers(project_review):
-    if not is_at_phase(Phase.SELF_REVIEW) and not is_at_phase(Phase.MANAGER_ADJUSTMENT):
-        return User.objects.none()
-    return project_review.reviewers.all()
+    if is_at_phase(Phase.SELF_REVIEW) or is_at_phase(Phase.MANAGER_ADJUSTMENT) or \
+            is_at_phase(Phase.MANAGER_REVIEW) or is_at_phase(Phase.RESULTS):
+        return project_review.reviewers.all()
+    return User.objects.none()
 
 
 def get_project_review_rating(project_review):
