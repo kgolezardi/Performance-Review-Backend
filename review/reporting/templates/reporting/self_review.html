@@ -1,0 +1,26 @@
+{% extends 'reporting/index.html' %}
+
+{% block content %}
+    <h1>Self Review Reports</h1>
+    <p>
+        {% for manager, data in report.items %}
+            {{ manager }}: {{ data.completed }}/{{ data.total }} <br/>
+        {% endfor %}
+    </p>
+
+    <p>Click here for a <a href="{% url 'reporting:self-review-detailed' %}">detailed report</a>...</p>
+
+    <p>
+        <strong>Note:</strong>
+        A person has completed self review when:
+        <ul>
+            <li>They have written at least one strength</li>
+            <li>They have written at least one weekness</li>
+            <li>They have written at least one project</li>
+            <li>For every project, the rating should be non-empty</li>
+            <li>For every project, the questions that have been specified in admin as
+                'required for completion in reports' should be non-empty</li>
+            <li>For every project, the checkbox regarding the counsel with manager should be checked</li>
+        </ul>
+    </p>
+{% endblock %}

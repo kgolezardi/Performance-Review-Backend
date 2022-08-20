@@ -1,0 +1,81 @@
+{% extends 'reporting/index.html' %}
+
+{% block content %}
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            max-width: 1600px;
+        }
+    </style>
+
+    <script>
+        function updateUrl() {
+            let cutoff = document.getElementById('cutoff').value;
+            document.location = '{% url 'reporting:peer-review' %}' + '?cutoff=' + cutoff
+        }
+    </script>
+
+    <h1>Peer Review Reports</h1>
+
+    <div>
+        Cut off value: <input type="number" style="max-width: 30px" value="5" id="cutoff">
+        <a href="javascript:updateUrl()">Update</a>
+    </div>
+
+    <p>
+        <table>
+            <thead>
+                <th>Manager</th>
+                <th>Have not reviewed anyone</th>
+                <th>Are in progress; reviewed less than {{ cutoff }} people</th>
+                <th>Are in progress; reviewed at least {{ cutoff }} people</th>
+                <th>Have finished the process</th>
+            </thead>
+
+        {% for manager, data in report.items %}
+            <tr>
+                <td>{{ manager }}</td>
+            
+                <td>
+                {% if data.have_not_started|length == 0 %}
+                    ---
+                {% else %}
+                    {{ data.have_not_started|length }}: {{ data.have_not_started|join:", " }}
+                {% endif %}
+                </td>
+            
+                <td>
+                {% if data.less_than_cutoff|length == 0 %}
+                    ---
+                {% else %}
+                    {{ data.less_than_cutoff|length }}: {{ data.less_than_cutoff|join:", " }}
+                {% endif %}
+                </td>
+            
+                <td>
+                {% if data.at_least_cutoff|length == 0 %}
+                    ---
+                {% else %}
+                    {{ data.at_least_cutoff|length }}: {{ data.at_least_cutoff|join:", " }}
+                {% endif %}
+                </td>
+            
+                <td>
+                {% if data.finished|length == 0 %}
+                    ---
+                {% else %}
+                    {{ data.finished|length }}: {{ data.finished|join:", " }}
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    </p>
+
+    <p>Click here for a <a href="{% url 'reporting:peer-review-detailed' %}">detailed report</a>...</p>
+
+    <p>
+        <strong>Note:</strong>
+        Complete is when the reviewer has pressed the 'Finish Review' button for all the assigned reviewees.
+    </p>
+{% endblock %}
