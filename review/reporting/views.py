@@ -124,7 +124,7 @@ def peer_review_overview(request):
 
     detailed_report = create_peer_review_report()
     managers_report = defaultdict(lambda: {
-        'have_not_started': [],
+        'have_not_reviewed': [],
         'less_than_cutoff': [],
         'at_least_cutoff': [],
         'finished': [],
@@ -132,15 +132,13 @@ def peer_review_overview(request):
     for user in detailed_report:
         if not user.manager:
             continue
-        if detailed_report[user]['total'] == 0:
-            continue
-        if detailed_report[user]['completed'] == 0:
-            managers_report[user.manager]['have_not_started'].append(user.username)
-        elif detailed_report[user]['completed'] == detailed_report[user]['total']:
+        if len(detailed_report[user]['done']) == 0:
+            managers_report[user.manager]['have_not_reviewed'].append(user.username)
+        elif len(detailed_report[user]['todo']) == len(detailed_report[user]['doing']) == 0:
             managers_report[user.manager]['finished'].append(user.username)
-        elif detailed_report[user]['completed'] < cutoff:
+        elif len(detailed_report[user]['done']) < cutoff:
             managers_report[user.manager]['less_than_cutoff'].append(user.username)
-        elif detailed_report[user]['completed'] >= cutoff:
+        elif len(detailed_report[user]['done']) >= cutoff:
             managers_report[user.manager]['at_least_cutoff'].append(user.username)
     return render(request=request, template_name='reporting/peer_review.html', context={
         'report': dict(managers_report),
@@ -155,19 +153,20 @@ def peer_review_detailed(request):
     response['Content-Desposition'] = 'attachment; filename="peer-review.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Manager', 'Sahabi', '# of reviewed users', 'Total # of users to review'])
+    writer.writerow(['Manager', 'Sahabi', 'ToDo (Reviewees)', 'Doing (Reviewees)', 'Done (Reviewees)'])
     for user, data in detailed_report.items():
         writer.writerow([
             user.manager,
             user,
-            data['completed'],
-            data['total'],
+            ' - '.join(map(lambda u: u.username, data['todo'])),
+            ' - '.join(map(lambda u: u.username, data['doing'])),
+            ' - '.join(map(lambda u: u.username, data['done'])),
         ])
     return response
 
 
 def create_peer_review_report():
-    report = defaultdict(lambda: {'completed': 0, 'total': 0})
+    report = defaultdict(lambda: {'todo': [], 'doing': [], 'done': []})
     selected_round = Settings.load().active_round
     participants = selected_round.participants.all()
     for user in participants:
@@ -181,9 +180,12 @@ def create_peer_review_report():
                 reviewee=reviewee,
                 reviewer=user,
             )
-            if person_review_qs.exists() and person_review_qs.get().state == State.DONE.value:
-                report[user]['completed'] += 1
-            report[user]['total'] += 1
+            if not person_review_qs.exists() or person_review_qs.get().state == State.TODO.value:
+                report[user]['todo'].append(reviewee)
+            elif person_review_qs.get().state == State.DOING.value:
+                report[user]['doing'].append(reviewee)
+            elif person_review_qs.get().state == State.DONE.value:
+                report[user]['done'].append(reviewee)
     return dict(report)
 
 
