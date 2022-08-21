@@ -37,10 +37,10 @@
                 <td>{{ manager }}</td>
             
                 <td>
-                {% if data.have_not_started|length == 0 %}
+                {% if data.have_not_reviewed|length == 0 %}
                     ---
                 {% else %}
-                    {{ data.have_not_started|length }}: {{ data.have_not_started|join:", " }}
+                    {{ data.have_not_reviewed|length }}: {{ data.have_not_reviewed|join:", " }}
                 {% endif %}
                 </td>
             
